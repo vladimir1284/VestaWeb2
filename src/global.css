@@ -1,0 +1,21 @@
+body {
+	font: 14px "Century Gothic", Futura, sans-serif;
+	margin: 0px;
+}
+.layer-switch {
+	right: 20px;
+	top: 60px;
+}
+.layer-btn {
+	background: no-repeat url('http://localhost/layers.png')
+}
+.ol-mouse-position{
+	color: white;
+	background-color:rgba(0,60,136,0.5);
+	padding: 5px 10px;
+	border-radius: 5px;
+}
+
+.layer-header{
+	color: #0d6efd;
+}
