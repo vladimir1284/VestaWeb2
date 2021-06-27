@@ -11,24 +11,38 @@
     import {transform} from 'ol/proj';
 
     import { onMount } from 'svelte';
-    import RadarPopup from './RadarPopup.svelte';
+    import RadarOL from './RadarOL.svelte';
+    import StormOL from './StormOL.svelte';
     import { Icon } from 'sveltestrap';
     import LayerSwitch, {layerController} from './LayerSwitch.svelte'
     import { getLayers } from './Layers.svelte'
 
+    import { radars, currentRadar, mapExtend, mapProj, storms } from './store.js'
+    import { get } from 'svelte/store'
+
     let layers;
 
+    const radar_list = get(radars)
+    const storm_list = get(storms)
+    const radar = get(currentRadar)
+    const baseExtend = get(mapExtend)
+    const map_proj = get(mapProj)
+
+    // Create projections
+    // TODO select an active proyection for the map
     proj4.defs("EPSG:2085",
             "+proj=lcc +lat_1=22.35 +lat_0=22.35 +lon_0=-81"+
             " +k_0=0.99993602 +x_0=500000 +y_0=280296.016"+
             " +ellps=clrk66 +units=m +datum=NAD27 +no_defs");
-    proj4.defs("CCNR:1000",
-            "+proj=aeqd +lat_0=21.4233 +lon_0=-77.8487" +
+    
+    radar_list.forEach(function (radar, index){
+        proj4.defs(radar.id,
+            `+proj=aeqd +lat_0=${radar.location.lat} +lon_0=${radar.location.lon}` +
             "+x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs");
+    });
     register(proj4);
 
     function createMap(){
-        const baseExtent = [-802183, -659851, 1997816, 1040148];
 
         const mousePositionControl = new MousePosition({
             coordinateFormat: createStringXY(4),
@@ -48,21 +62,34 @@
         const map = new Map({
             controls: defaults().extend([mousePositionControl, LayerSwitchControl]),
             view: new View({
-            projection: 'EPSG:2085',
-            center:getCenter(baseExtent),
+            projection: map_proj,
+            center:getCenter(baseExtend),
             zoom: 7
             }),
             layers: map_layers,
             target: 'map'
         });
 
-        // Overlay en la ubicación del radar
-        var radar = new Overlay({
-            element: document.getElementById('radar'),
-            positioning: 'center-center'
+        // Overlay en la ubicación de los radares
+        radar_list.forEach(function (radar, index){
+            const radar_ol = new Overlay({
+                element: document.getElementById(`radar-${radar.id}`),
+                positioning: 'center-center'
+            });
+            radar_ol.setPosition(transform([0,0], radar.id, map_proj));
+            map.addOverlay(radar_ol);
+        });        
+        
+        // Overlay de las tormentas
+        storm_list.forEach(function (storm, index){
+            const storm_ol = new Overlay({
+                'id':storm.id,
+                element: document.getElementById(`storm-${storm.id}`),
+                positioning: 'center-center'
+            });
+            storm_ol.setPosition(transform([storm.lon,storm.lat], 'EPSG:4326', map_proj));
+            map.addOverlay(storm_ol);
         });
-        radar.setPosition(transform([0,0],'CCNR:1000','EPSG:2085'));
-        map.addOverlay(radar);
     }
 
     function mapAction() {
@@ -81,7 +108,13 @@
 
 <div id="map" class="map"></div>
 <div id="mouse-position"></div>
-<RadarPopup/>
+
+<StormOL storm_list={storm_list}/>
+
+{#each radar_list as radar}
+    <RadarOL radar={radar}/>
+{/each}
+
 <LayerSwitch layers={layers}/>
 
 <style>

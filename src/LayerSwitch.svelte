@@ -1,42 +1,50 @@
 <script>
   import {ImageStatic as Static} from 'ol/source';
-  import { Form, FormGroup, Button, Popover, Input, Label, DropdownItem } from 'sveltestrap';
+  import { FormGroup, Button, Popover, Input, Label, DropdownItem } from 'sveltestrap';
+  import { product_base_url, currentRadar, currentProduct, current_datetime, availableProducts} from './store.js'
+  import { get } from 'svelte/store'
+  import {createProductSource, createCoverSource} from './Layers.svelte'
 
-  let selectedProduct = "CRE_97";
+  const baseUrl = get(product_base_url)
+  const radar = get(currentRadar)
+  const product = get(currentProduct)
+  const datetime = get(current_datetime)
+  const raster_products = get(availableProducts)
+
+  let selectedProduct = raster_products[0];
+  let range = selectedProduct.range
   let productOpacity = 0.5;
   let showCover = true;
 
   export let layers;
 
   
-    // update product on radio button switch
-    $: {
-      if (layers){
-        const url = `http://localhost/testol/CCNR/${selectedProduct}_2021-06-03_16-18-00.png`
-        
-          layers.product.setSource(new Static({
-                      url:url,
-                      projection: 'CCNR:1000',
-                      imageSmoothing: false,
-                      imageExtent: [-232000, -232000, 232000, 232000],
-                  }));
+  // update product on radio button switch
+  $: {
+    if (layers){      
+      layers.product.setSource(createProductSource(selectedProduct))   
+      if (selectedProduct.range != range){
+        // Update cover when needed
+        layers.cover.setSource(createCoverSource(selectedProduct))
+        range = selectedProduct.range
       }
     }
+  }
 
-    // Modify cover layer visibility
-    $: {
-      if (layers){
-        layers.cover.setVisible(showCover);
-        // console.log(`Cover: ${showCover}`)
-      }
+  // Modify cover layer visibility
+  $: {
+    if (layers){
+      layers.cover.setVisible(showCover);
+      // console.log(`Cover: ${showCover}`)
     }
+  }
 
-    // Control Porduct layer opacity
-    $: {
-      if (layers){
-        layers.product.setOpacity(productOpacity);
-      }
+  // Control Porduct layer opacity
+  $: {
+    if (layers){
+      layers.product.setOpacity(productOpacity);
     }
+  }
 
 </script>
 
@@ -64,10 +72,9 @@
   </div>
   <FormGroup>
     <Label for="productOpacity" class="layer-header"><h6>Producto:</h6></Label>
-
-    <Input id="r1" type="radio" bind:group={selectedProduct} value="CRE_97" label="Máximos"/>
-    <Input id="r2" type="radio" bind:group={selectedProduct} value="ET_41" label="Topes" />
-
+    {#each raster_products as product}
+      <Input id={product.id} type="radio" bind:group={selectedProduct} value={product} label={product.name}/>
+    {/each}
     <Input
       type="range"
       name="productOpacity"

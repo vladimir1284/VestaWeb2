@@ -18,51 +18,53 @@
     const datetime = get(current_datetime)
     const map_proj = get(mapProj)
 
-    export function getLayers(){
-        console.log(`Extend: ${baseExtend}`)    
+    const fill = new Fill({
+        color: 'rgba(255,255,255,0.1)'
+        });
+    const polygonCords = fromExtent(baseExtend).getCoordinates();
+
+    export function createCoverSource(product){
+        const coverSource = new VectorSource({wrapX: false});
+
+        const circleCoords = fromCircle(new Circle(
+                    transform([0,0],radar.id,map_proj), product.range)).getCoordinates();
+        const coords = [polygonCords[0], circleCoords[0]];
+        const inversePolygon = new Feature(new Polygon(coords));
+                                            inversePolygon.setStyle(new Style({
+                                                fill: fill}));
+
+        coverSource.addFeature(inversePolygon);
+        return coverSource;
+    }
+
+    export function createProductSource(product){
+        return new Static({
+            url: baseUrl + radar.id + '/' + product.id + '_' + datetime + '.png',
+            projection: radar.id,
+            imageSmoothing: false,
+            imageExtent: [-product.range, -product.range, 
+                          product.range, product.range],
+        });
+    }
+
+    export function getLayers(){  
         //A Raster base layer	
         const baseLayer = new ImageLayer({
             source:new Static({
                 url: baseUrl +'Mosaico-Cuba-Norte-1km.gif',
                 projection: map_proj,
                 imageExtent: baseExtend,
-            })
-        });
+        })
+    });
 
         // Layer with the desired product
         let productLayer = new ImageLayer({
-            source:new Static({
-                url: baseUrl + radar.id + '/' + product.id + '_' + datetime + '.png',
-                projection: radar.proj,
-                imageSmoothing: false,
-                imageExtent: [-product.range, -product.range, product.range, product.range],
-            }),
+            source: createProductSource(product),
             opacity: 0.5
         });
 
         // ------------ Cover -----------------
-        var fill = new Fill({
-        color: 'rgba(255,255,255,0.1)'
-        });
-        
-        var coverSource = new VectorSource({wrapX: false});
-
-        let coverLayer = new VectorLayer({
-            source: coverSource,
-        });
-        var circleCoords = fromCircle(new Circle(
-            transform([0,0],radar.proj,map_proj), product.range)).getCoordinates();
-
-        var polygonCords = fromExtent(baseExtend).getCoordinates();
-        var coords = [polygonCords[0], circleCoords[0]];
-
-        var inversePolygon = new Feature(new Polygon(coords));
-        inversePolygon.setStyle(new Style({
-            fill: fill
-        }));
-
-    
-        coverSource.addFeature(inversePolygon);
+        let coverLayer = new VectorLayer({source: createCoverSource(product)});
         
         // ------------------------------------
 
