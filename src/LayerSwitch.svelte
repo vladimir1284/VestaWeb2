@@ -1,9 +1,12 @@
 <script>
   import {ImageStatic as Static} from 'ol/source';
-  import { FormGroup, Button, Popover, Input, Label, DropdownItem } from 'sveltestrap';
-  import { product_base_url, currentRadar, currentProduct, current_datetime, availableProducts} from './store.js'
+  import { FormGroup, Button, Popover, Input, Label, DropdownItem, 
+           Tooltip, InputGroup, InputGroupText, Icon } from 'sveltestrap';
+  import { product_base_url, currentRadar, currentProduct, 
+           current_datetime, availableProducts} from './store.js'
   import { get } from 'svelte/store'
   import {createProductSource, createCoverSource} from './Layers.svelte'
+  import Settings from 'svelte-material-icons/Settings.svelte'
 
   const baseUrl = get(product_base_url)
   const radar = get(currentRadar)
@@ -17,7 +20,7 @@
   let showCover = true;
 
   export let layers;
-
+  export let show_storms
   
   // update product on radio button switch
   $: {
@@ -68,7 +71,7 @@
 
 <Popover placement="bottom" target="layer_switch_btn">
   <div slot="title">
-    Gestionar capas
+    Gestionar capas 
   </div>
   <FormGroup>
     <Label for="productOpacity" class="layer-header"><h6>Producto:</h6></Label>
@@ -84,17 +87,35 @@
       step={0.1}
       bind:value={productOpacity}
       placeholder="Opacidad" />    
+
+    <InputGroup>
+      <Input id="show-storm" type="checkbox" bind:checked={show_storms} label="Celdas de tormenta"/>
+      <button class="edit-storm"><Settings color={show_storms?"#0d6efd":"#ced4da"} size="1.5em"/></button>   
+    </InputGroup>
   </FormGroup>
+
   <DropdownItem divider />
   <FormGroup>
     <Input id="c1" type="checkbox" bind:checked={showCover} label="Covertura" />
   </FormGroup>
 </Popover>
 
-<Popover
-  trigger="hover"
+<Tooltip
   placement="left"
-  target="layer_switch_btn"
-  title="Seleccionar Productos">
-  Haz click en este botón para cambiar de producto.
-</Popover>
+  target="layer_switch_btn">
+  Gestionar capas
+</Tooltip>
+
+
+<style>
+	.edit-storm {
+    padding-left: 2px;
+    padding-right: 0;
+    background: transparent;
+		margin-bottom: 4px;
+    border: 0;
+    }	
+    .edit-storm:active {
+    background: #ced4da;
+    }
+</style>

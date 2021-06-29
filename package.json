@@ -16,8 +16,11 @@
     "dev": "webpack serve --content-base public"
   },
   "dependencies": {
-    "sveltestrap": "^5.2.1",
+    "chart.js": "^3.4.0",
+    "chartjs-plugin-annotation": "^1.0.2",
     "ol": "6.5.0",
-    "proj4": "2.2.1"
+    "proj4": "2.2.1",
+    "svelte-material-icons": "^1.0.3",
+    "sveltestrap": "^5.2.1"
   }
 }

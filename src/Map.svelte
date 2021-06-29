@@ -13,6 +13,7 @@
     import { onMount } from 'svelte';
     import RadarOL from './RadarOL.svelte';
     import StormOL from './StormOL.svelte';
+    import StormModal from './StormModal.svelte'
     import { Icon } from 'sveltestrap';
     import LayerSwitch, {layerController} from './LayerSwitch.svelte'
     import { getLayers } from './Layers.svelte'
@@ -20,7 +21,10 @@
     import { radars, currentRadar, mapExtend, mapProj, storms } from './store.js'
     import { get } from 'svelte/store'
 
-    let layers;
+    // State variables
+    let layers
+    let show_storms = true
+    let StormData = {'show':false, 'storm':null}
 
     const radar_list = get(radars)
     const storm_list = get(storms)
@@ -29,7 +33,7 @@
     const map_proj = get(mapProj)
 
     // Create projections
-    // TODO select an active proyection for the map
+    // TODO select a non deprecated EPSG proyection for the map
     proj4.defs("EPSG:2085",
             "+proj=lcc +lat_1=22.35 +lat_0=22.35 +lon_0=-81"+
             " +k_0=0.99993602 +x_0=500000 +y_0=280296.016"+
@@ -87,7 +91,7 @@
                 element: document.getElementById(`storm-${storm.id}`),
                 positioning: 'center-center'
             });
-            storm_ol.setPosition(transform([storm.lon,storm.lat], 'EPSG:4326', map_proj));
+            storm_ol.setPosition(transform([storm.Ipos,storm.Jpos], radar.id, map_proj));
             map.addOverlay(storm_ol);
         });
     }
@@ -109,13 +113,17 @@
 <div id="map" class="map"></div>
 <div id="mouse-position"></div>
 
-<StormOL storm_list={storm_list}/>
+<!-- Mostrar las celdas de tormenta -->
+<StormOL storm_list={storm_list} show_storms={show_storms} bind:StormData={StormData}/>
 
+<!-- Mostrar los emplazamientos de radar -->
 {#each radar_list as radar}
     <RadarOL radar={radar}/>
 {/each}
 
-<LayerSwitch layers={layers}/>
+<StormModal bind:StormData={StormData}/>
+
+<LayerSwitch layers={layers} bind:show_storms={show_storms}/>
 
 <style>
 	.map {

@@ -2,21 +2,37 @@
   import { Popover, Tooltip } from 'sveltestrap';
 
   export let storm_list;
+  export let show_label = false;
+  export let show_storms;
+  export let StormData
+  
+  function toggle(storm){
+    StormData.show = true
+    StormData.storm = storm
+  }
+
+  function getIconSize(storm) {
+    const size = 12+Math.floor(storm.vil.slice(-1)[0]/3)
+    return `width:${size}px; height:${size}px`
+  }
 </script>
 
 {#each storm_list as storm}
-  <div id={"storm-"+storm.id}>
-    <button class="storm" id={"btn-"+storm.id}></button>
-    <div class="storm-label">{storm.id}</div>
-    <Tooltip target={"btn-"+storm.id} placement='top'>{storm.id}</Tooltip>
+  <div id={"storm-"+storm.id} style={show_storms?'visibility:visible':'visibility:hidden'}>
+    <button class="storm" id={"btn-"+storm.id} 
+            style={getIconSize(storm)}
+            on:click={toggle(storm)}>
+    </button>
+    {#if show_label}
+      <div class="storm-label">{storm.id}</div>
+    {:else}
+      <Tooltip target={"btn-"+storm.id} placement='top'>{storm.id}</Tooltip>
+    {/if}
   </div>
 {/each}
 
-
 <style>
   .storm {
-    width: 20px;
-    height:20px;
     background: rgba(47, 224, 255, 0.425);
     border-radius:50%;
     padding: 0;
