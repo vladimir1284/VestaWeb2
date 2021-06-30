@@ -6,21 +6,19 @@
     import {getHailChart} from './hail.js'
     import {getVilChart} from './vil_dbzm.js'
     import {drawAzran} from './azran.js'
+    var { DateTime } = require('luxon');
 
     export let storm
 
 
     function init() {
-        let labels = [ ]
-        storm.time.forEach(function (min, index){
-            if (storm.centroids[index]){
-                let hrs = Math.floor(min/60)
-                const mins = min-60*hrs
-                // const ampm = (hrs > 11)?'pm':'am'
-                // hrs = (hrs > 12)?hrs-12:hrs
-                labels.push(`${("0"+hrs).slice(-2)}:${("0"+mins).slice(-2)}`)
-            }
+        let labels = [null]
+        const times = storm.time.slice(-storm.centroids.length)
+        times.forEach(function (min, index){
+            const time = DateTime.fromSeconds(min*60)
+            labels.push(time.toFormat("HH:mm"))
         })
+        labels.push(null)
 
         var hgtsChart = getHeightsChart('alturas', storm, labels)
         var hailChart = getHailChart('hail', storm, labels)
@@ -40,14 +38,14 @@
     onMount(init);
 </script>
 
-<Container>
-    <Row>
-      <Col xs="6"><canvas id="azran" height=200px></canvas></Col>
-      <Col xs="6"><canvas id="alturas" height=200px></canvas></Col>
+<Container >
+    <Row cols={{ lg: 2}}>
+      <Col xs="auto"><canvas id="azran" height=180px></canvas></Col>
+      <Col xs="auto"><canvas id="alturas" height=180px></canvas></Col>
     </Row>
-    <Row>
-      <Col xs="6"><canvas id="hail" height=200px></canvas></Col>
-      <Col xs="6"><canvas id="vil_dbzm" height=200px></canvas></Col>
+    <Row cols={{ lg: 2}}>
+      <Col xs="auto"><canvas id="hail" height=180px></canvas></Col>
+      <Col xs="auto"><canvas id="vil_dbzm" height=180px></canvas></Col>
     </Row>
 </Container>
 

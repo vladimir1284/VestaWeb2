@@ -2,6 +2,9 @@ import Chart from 'chart.js/auto'
 import annotationPlugin from 'chartjs-plugin-annotation';
 Chart.register(annotationPlugin);
 
+
+let maxH = 0
+
 /*  Figure 3-15. Cell Trend Data Packet - Packet Code 21 (Sheet 1)
 page 3-117. Document Number 2620001L
 If the value is over 700, then 1000 has been added to denote that 
@@ -15,7 +18,9 @@ function convertBaseAndTopKft2Km(data){
             // was used for obtainig this value
             value-= 100 
         }
-        converted.push(value*.3048)
+        const kms = value*.3048
+        maxH = (kms>maxH)?kms:maxH
+        converted.push(kms)
     })
     return converted
 }
@@ -30,9 +35,12 @@ function convertArrKft2Km(data) {
 }
     
 export function getHeightsChart(canvasID, storm, labels){
+
     // Convert from ft to km
-    const centroids = convertArrKft2Km(storm.centroids)
-    const max_ref_hgts = convertArrKft2Km(storm.max_ref_hgts)
+    let centroids = convertArrKft2Km(storm.centroids)
+    centroids = [null].concat(centroids)
+    let max_ref_hgts = convertArrKft2Km(storm.max_ref_hgts)
+    max_ref_hgts = [null].concat(max_ref_hgts)
 
     
     const base_hgts = convertBaseAndTopKft2Km(storm.bases)
@@ -41,17 +49,43 @@ export function getHeightsChart(canvasID, storm, labels){
     // Create arrows from base to top
 
     let bt_annotations = {}
-    for (var i = 0; i < base_hgts.length; i++){
+    const xspace = 0.02*base_hgts.length
+    const yspace = 0.08*maxH
+    maxH = 0 // Restore for the other cells
+    for (var k = 0; k < base_hgts.length; k++){
+        const i = k +1
         bt_annotations['line' + i] = {
                         type: 'line',
-                        yMin: base_hgts[i],
-                        yMax: top_hgts[i],
+                        yMin: base_hgts[k],
+                        yMax: top_hgts[k],
                         xMin: i,
                         xMax: i,
                         borderColor: 'black',
-                        borderWidth: 2,
+                        borderWidth: 1,
+                    }
+        bt_annotations['top' + i] = {
+                        type: 'line',
+                        yMin: top_hgts[k],
+                        yMax: top_hgts[k],
+                        xMin: i-xspace,
+                        xMax: i+xspace
+                    }
+        bt_annotations['bot_r' + i] = {
+                        type: 'line',
+                        yMin: base_hgts[k],
+                        yMax: base_hgts[k]+yspace,
+                        xMin: i,
+                        xMax: i+xspace
+                    }
+        bt_annotations['bot_l' + i] = {
+                        type: 'line',
+                        yMin: base_hgts[k]+yspace,
+                        yMax: base_hgts[k],
+                        xMin: i-xspace,
+                        xMax: i
                     }
     }
+    
 
     // Data for the Centroid and the height of the máximum reflectivity
     const data_hgts = {

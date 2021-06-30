@@ -1,20 +1,22 @@
 import Chart from 'chart.js/auto'
 
 export function getVilChart(canvasID, storm, labels){
-    // Data for the cell based VIL and the maximum reflectivity        
+    // Data for the cell based VIL and the maximum reflectivity         
+    const maxZ = [null].concat(storm.maxZ)          
+    const vil = [null].concat(storm.vil)   
     const data_vil_dbzm = {
         labels: labels,
         datasets: [{
             label: 'DBZM',
             backgroundColor: 'red',
             borderColor: 'red',
-            data: storm.maxZ,
+            data: maxZ,
         },
         {
             label: 'CB VIL',
             backgroundColor: 'blue',
             borderColor: 'blue',
-            data: storm.vil,
+            data: vil,
         }
     ]};
     const options_vil_dbzm ={

@@ -4,7 +4,7 @@ export function drawAzran(canvasID, storm) {
         var ctx = canvas.getContext('2d')
         const xc = 0.5 * canvas.width
         const yc = 0.5 * canvas.height
-        const maxRange = 0.65*xc
+        const maxRange = ((xc<yc)?xc:yc)-2
         // Fixed template
         ctx.beginPath()
         ctx.strokeStyle = 'blue';

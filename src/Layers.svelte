@@ -39,7 +39,7 @@
 
     export function createProductSource(product){
         return new Static({
-            url: baseUrl + radar.id + '/' + product.id + '_' + datetime + '.png',
+            url: baseUrl + radar.id + '/' + product.id + '_' + datetime.toFormat('yyyy-MM-dd_hh-mm-ss') + '.png',
             projection: radar.id,
             imageSmoothing: false,
             imageExtent: [-product.range, -product.range, 

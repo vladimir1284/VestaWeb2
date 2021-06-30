@@ -6,7 +6,7 @@ processing. Figure 3-14. Special Graphic Symbol Packet. */
 function filterProbability(data) {
     let filtered = []
     data.forEach(function (value, index){
-        value = (value > 100)?0:value
+        value = (value > 100)?null:value
         filtered.push(value)
     })
     return filtered
@@ -14,8 +14,10 @@ function filterProbability(data) {
 
 export function getHailChart(canvasID, storm, labels){
     // Data for the Centroid and the height of the máximum reflectivity
-    const poh = filterProbability(storm.poh)
-    const posh = filterProbability(storm.posh)
+    let poh = filterProbability(storm.poh)
+    poh = [null].concat(poh)
+    let posh = filterProbability(storm.posh)
+    posh = [null].concat(posh)
     
     const data_hail = {
         labels: labels,
@@ -33,12 +35,16 @@ export function getHailChart(canvasID, storm, labels){
         }
     ]};
     const options_hail ={
+        layout:{
+            
+        },
         scales: {
             y: {
                 title: {
                     display: true,
                     text: "%"
-                }
+                },
+                min: 0
             }
         }
     }
