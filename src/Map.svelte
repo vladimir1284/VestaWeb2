@@ -40,8 +40,8 @@
     // Initialize storm settings
     storm_list.forEach(function (storm, index){
         stormSettings[storm.id] = {
-            'future': false,
-            'past': false,
+            'future': true,
+            'past': true,
             'visible': true
         }
     })
@@ -89,7 +89,6 @@
             layers: map_layers,
             target: 'map'
         });
-        console.log(map)
 
         // Overlay en la ubicación de los radares
         radar_list.forEach(function (radar, index){

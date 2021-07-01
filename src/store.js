@@ -1,7 +1,7 @@
 import { writable, readable } from 'svelte/store'
 var { DateTime } = require('luxon');
 
-export const product_base_url = readable('http://localhost/testol/')
+export const product_base_url = readable('imgs/')
 
 export const current_datetime = writable(DateTime.utc(1993, 3, 13, 10, 33))
 

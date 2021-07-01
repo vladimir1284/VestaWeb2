@@ -21,12 +21,20 @@
 
   // Update globally past and future
   $:{
-    updateTrend(past, future)
+    updatePast(past)
   }
-  function updateTrend(past, future){
+  $:{
+    updateFuture(future)
+  }
+  function updateFuture(future){
+    for (const [key, value] of Object.entries(stormSettings)) {
+      stormSettings[key].future = future
+    }
+  }
+
+  function updatePast(past){
     for (const [key, value] of Object.entries(stormSettings)) {
       stormSettings[key].past = past
-      stormSettings[key].future = future
     }
   }
 
@@ -83,8 +91,8 @@
         <tr>
           <th class="text-start">ID</th>
           <th id="visible">V</th>
-          <th id="past">P</th>
-          <th id="future">H</th>
+          <th id="future">P</th>
+          <th id="past">H</th>
           <th>AZ(&deg;) DIS(km)</th>
           <th>BASE (km)</th>
           <th>TOPE (km)</th>

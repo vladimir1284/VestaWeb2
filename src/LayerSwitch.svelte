@@ -7,6 +7,7 @@
   import { get } from 'svelte/store'
   import {createProductSource, createCoverSource} from './Layers.svelte'
   import Settings from 'svelte-material-icons/Settings.svelte'
+  import LayersOutline from 'svelte-material-icons/LayersOutline.svelte'
 
   const baseUrl = get(product_base_url)
   const radar = get(currentRadar)
@@ -81,7 +82,7 @@
 </script>
 
 
-<Button id="layer_switch_btn" class="layer-btn"></Button>
+<Button id="layer_switch_btn" ><LayersOutline color="white" size="1.2em"/></Button>
 
 <Popover placement="bottom" target="layer_switch_btn">
   <div slot="title">
@@ -112,7 +113,7 @@
 
   <DropdownItem divider />
   <FormGroup>
-    <Input id="c1" type="checkbox" bind:checked={showCover} label="Covertura" />
+    <Input id="c1" type="checkbox" bind:checked={showCover} label="Cobertura" />
   </FormGroup>
 </Popover>
 

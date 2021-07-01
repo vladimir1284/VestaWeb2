@@ -6,9 +6,6 @@ body {
 	right: 20px;
 	top: 60px;
 }
-.layer-btn {
-	background: no-repeat url('http://localhost/layers.png')
-}
 .ol-mouse-position{
 	color: white;
 	background-color:rgba(0,60,136,0.5);

@@ -23,7 +23,10 @@
     data = false
   }
   
-  const toggle = () => (StormData.show = false); 
+  function toggle(){
+    StormData.show = false
+    data = true
+  }
    
 </script>
 
