@@ -33,9 +33,9 @@
     <span class='date'>&emsp {datetime.setZone('local').toFormat('dd/MMM/y HH:mma')}</span> 
     <button class="adata" on:click={data?showAdata:showData}>
       {#if data} 
-        <TableLarge color="gray"} size="1.2em"/>
+        <TableLarge color="gray" size="1.2em"/>
       {:else}
-        <Image color="gray"} size="1.2em"/>
+        <Image color="gray" size="1.2em"/>
       {/if}
     </button>
   </ModalHeader>

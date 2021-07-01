@@ -8,9 +8,11 @@
     import Polygon from 'ol/geom/Polygon';
     import {transform} from 'ol/proj';
 
+    import {createTrendsSource} from './Trends.svelte'
     // Import globals from store.js
     import { mapExtend, product_base_url, currentRadar, currentProduct, current_datetime, mapProj} from './store.js'
     import { get } from 'svelte/store'
+
     const baseExtend = get(mapExtend)
     const baseUrl = get(product_base_url)
     const radar = get(currentRadar)
@@ -30,8 +32,7 @@
                     transform([0,0],radar.id,map_proj), product.range)).getCoordinates();
         const coords = [polygonCords[0], circleCoords[0]];
         const inversePolygon = new Feature(new Polygon(coords));
-                                            inversePolygon.setStyle(new Style({
-                                                fill: fill}));
+        inversePolygon.setStyle(new Style({fill: fill}));
 
         coverSource.addFeature(inversePolygon);
         return coverSource;
@@ -47,7 +48,7 @@
         });
     }
 
-    export function getLayers(){  
+    export function getLayers(stormSettings){  
         //A Raster base layer	
         const baseLayer = new ImageLayer({
             source:new Static({
@@ -65,11 +66,14 @@
 
         // ------------ Cover -----------------
         let coverLayer = new VectorLayer({source: createCoverSource(product)});
+
+        // ------------ Trends -----------------
+        let trendsLayer = new VectorLayer({source: createTrendsSource(stormSettings)});
         
         // ------------------------------------
-
         return ({'base': baseLayer,
                 'product': productLayer,
-                'cover': coverLayer});
+                'cover': coverLayer,
+                'trends': trendsLayer});
     }
 </script>

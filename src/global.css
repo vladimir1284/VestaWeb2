@@ -19,4 +19,13 @@ body {
 .layer-header{
 	color: #0d6efd;
 }
+.table-responsive {
+    overflow: auto;
+	height: 400px;
+  }
 
+.table-responsive thead th{
+	background-color:white;
+	position: sticky;
+	top: 0;
+}

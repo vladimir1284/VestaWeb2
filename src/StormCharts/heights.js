@@ -113,7 +113,7 @@ export function getHeightsChart(canvasID, storm, labels){
             y: {
                 title: {
                     display: true,
-                    text: "Km"
+                    text: "km"
                 },
                 min: 0
             }

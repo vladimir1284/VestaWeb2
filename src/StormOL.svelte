@@ -1,9 +1,9 @@
 <script>
   import { Popover, Tooltip } from 'sveltestrap';
 
-  export let storm_list;
-  export let show_label = false;
-  export let show_storms;
+  export let storm_list
+  export let show_label
+  export let stormSettings
   export let StormData
   
   function toggle(storm){
@@ -18,7 +18,7 @@
 </script>
 
 {#each storm_list as storm}
-  <div id={"storm-"+storm.id} style={show_storms?'visibility:visible':'visibility:hidden'}>
+  <div id={"storm-"+storm.id} style={stormSettings[storm.id].visible?'visibility:visible':'visibility:hidden'}>
     <button class="storm" id={"btn-"+storm.id} 
             style={getIconSize(storm)}
             on:click={toggle(storm)}>

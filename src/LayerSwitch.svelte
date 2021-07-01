@@ -17,10 +17,23 @@
   let selectedProduct = raster_products[0];
   let range = selectedProduct.range
   let productOpacity = 0.5;
-  let showCover = true;
+  let showCover = true
+  let show_storms = true
+  
+  export let showStormTable
+  export let layers
+  export let stormSettings
 
-  export let layers;
-  export let show_storms
+  // Modify strom cells visibility
+  $:{
+    updateStormSettings(show_storms)
+  }
+  function updateStormSettings(visible) {
+    for (const [key, value] of Object.entries(stormSettings)) {
+      stormSettings[key].visible = visible
+    }
+    stormSettings  = stormSettings
+  }
   
   // update product on radio button switch
   $: {
@@ -49,6 +62,7 @@
     }
   }
 
+  const toggle = () => (showStormTable = true);
 </script>
 
 
@@ -90,7 +104,9 @@
 
     <InputGroup>
       <Input id="show-storm" type="checkbox" bind:checked={show_storms} label="Celdas de tormenta"/>
-      <button class="edit-storm"><Settings color={show_storms?"#0d6efd":"#ced4da"} size="1.5em"/></button>   
+      <button class="edit-storm" on:click={toggle}>
+        <Settings color="#0d6efd" size="1.5em"/>
+      </button>   
     </InputGroup>
   </FormGroup>
 

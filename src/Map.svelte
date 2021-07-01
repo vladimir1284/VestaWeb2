@@ -14,6 +14,8 @@
     import RadarOL from './RadarOL.svelte';
     import StormOL from './StormOL.svelte';
     import StormModal from './StormModal.svelte'
+    import StormTable from './StormTable.svelte'
+    import Trends from './Trends.svelte'
     import { Icon } from 'sveltestrap';
     import LayerSwitch, {layerController} from './LayerSwitch.svelte'
     import { getLayers } from './Layers.svelte'
@@ -25,12 +27,26 @@
     let layers
     let show_storms = true
     let StormData = {'show':false, 'storm':null}
+    let showStormTable = false
+    let show_label = false
+    let stormSettings = {}
 
     const radar_list = get(radars)
     const storm_list = get(storms)
     const radar = get(currentRadar)
     const baseExtend = get(mapExtend)
     const map_proj = get(mapProj)
+
+    // Initialize storm settings
+    storm_list.forEach(function (storm, index){
+        stormSettings[storm.id] = {
+            'future': false,
+            'past': false,
+            'visible': true
+        }
+    })
+    // reaisign for recognizing state change
+    stormSettings = stormSettings 
 
     // Create projections
     // TODO select a non deprecated EPSG proyection for the map
@@ -58,7 +74,7 @@
         let LayerSwitchControl = layerController();
 
         // Layers
-        layers = getLayers();
+        layers = getLayers(stormSettings);
         let map_layers = Object.keys(layers).map(function(key){
             return layers[key];
         });
@@ -73,6 +89,7 @@
             layers: map_layers,
             target: 'map'
         });
+        console.log(map)
 
         // Overlay en la ubicación de los radares
         radar_list.forEach(function (radar, index){
@@ -114,16 +131,35 @@
 <div id="mouse-position"></div>
 
 <!-- Mostrar las celdas de tormenta -->
-<StormOL storm_list={storm_list} show_storms={show_storms} bind:StormData={StormData}/>
+<StormOL 
+    storm_list={storm_list} 
+    stormSettings={stormSettings} 
+    bind:StormData={StormData}
+    show_label={show_label}
+/>
 
 <!-- Mostrar los emplazamientos de radar -->
 {#each radar_list as radar}
     <RadarOL radar={radar}/>
 {/each}
 
+<!-- Mostrar los datos de la celda seleccionada -->
 <StormModal bind:StormData={StormData}/>
 
-<LayerSwitch layers={layers} bind:show_storms={show_storms}/>
+<!-- Mostrar la tabla de las celdas de tormenta -->
+<StormTable 
+    bind:showStormTable={showStormTable}
+    bind:show_label={show_label}
+    bind:stormSettings={stormSettings}
+/>
+
+<LayerSwitch 
+    layers={layers} 
+    bind:stormSettings={stormSettings}
+    bind:showStormTable={showStormTable}
+/>
+
+<Trends stormSettings={stormSettings}/>
 
 <style>
 	.map {

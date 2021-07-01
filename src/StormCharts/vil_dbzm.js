@@ -24,7 +24,7 @@ export function getVilChart(canvasID, storm, labels){
             y: {
                 title: {
                     display: true,
-                    text: "DBZ-KG/M^2"
+                    text: "dbZ - kg/m^2"
                 }
             }
         }

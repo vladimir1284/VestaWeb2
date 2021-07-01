@@ -21,17 +21,6 @@ export const radars = readable([ccnr, ccsb])
 
 export const currentRadar = writable(ccnr)
 
-// const cre_97 = {
-//     'id': "CRE_97",
-//     'range':232000,
-//     'name': "Máximos 230km"
-// }
-// const cre_98 = {
-//     'id': "CRE_98",
-//     'range':464000,
-//     'name': "Máximos 460km"
-// }
-
 const cr_38 = {
     'id': "CR_38",
     'range':464000,
