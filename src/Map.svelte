@@ -25,6 +25,7 @@
 
     // State variables
     let layers
+    let map_layers
     let show_storms = true
     let StormData = {'show':false, 'storm':null}
     let showStormTable = false
@@ -75,10 +76,11 @@
 
         // Layers
         layers = getLayers(stormSettings);
-        let map_layers = Object.keys(layers).map(function(key){
-            return layers[key];
-        });
-
+        map_layers = [layers['orography'],
+                        layers['osm'],
+                        layers['product'],
+                        layers['cover'],
+                        layers['trends']]
         const map = new Map({
             controls: defaults().extend([mousePositionControl, LayerSwitchControl]),
             view: new View({
@@ -110,6 +112,7 @@
             storm_ol.setPosition(transform([storm.Ipos,storm.Jpos], radar.id, map_proj));
             map.addOverlay(storm_ol);
         });
+     return map   
     }
 
     function mapAction() {

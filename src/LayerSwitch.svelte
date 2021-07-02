@@ -24,6 +24,7 @@
   export let showStormTable
   export let layers
   export let stormSettings
+  let baseLayer = 'orography'
 
   // Modify strom cells visibility
   $:{
@@ -55,6 +56,16 @@
       // console.log(`Cover: ${showCover}`)
     }
   }
+
+  // Control base layer
+  $: {
+    if (layers){
+      layers.orography.setVisible(false)
+      layers.osm.setVisible(false)
+      layers[baseLayer].setVisible(true)
+    }
+  }
+
 
   // Control Porduct layer opacity
   $: {
@@ -111,10 +122,22 @@
     </InputGroup>
   </FormGroup>
 
-  <DropdownItem divider />
   <FormGroup>
     <Input id="c1" type="checkbox" bind:checked={showCover} label="Cobertura" />
   </FormGroup>
+
+  <DropdownItem divider />
+
+  <Input type="select" name="baseLayer" id="baseLayer" bind:value={baseLayer}>
+    <option value='orography'>Orografía</option>
+    <option value='osm'>Político</option>
+  </Input>
+
+  <Tooltip
+    placement="left"
+    target="baseLayer">
+    Mapa de fondo
+  </Tooltip>
 </Popover>
 
 <Tooltip
@@ -122,6 +145,7 @@
   target="layer_switch_btn">
   Gestionar capas
 </Tooltip>
+
 
 
 <style>

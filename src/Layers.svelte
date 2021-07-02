@@ -1,6 +1,8 @@
 <script context="module">
     import {ImageStatic as Static, Vector as VectorSource} from 'ol/source';
     import {Image as ImageLayer, Vector as VectorLayer} from 'ol/layer';
+    import TileLayer from 'ol/layer/Tile';
+    import OSM from 'ol/source/OSM';
     import {Circle as CircleStyle, Fill, Stroke, Style} from 'ol/style';
     import Feature from 'ol/Feature';
     import Circle from 'ol/geom/Circle';
@@ -50,16 +52,22 @@
 
     export function getLayers(stormSettings){  
         //A Raster base layer	
-        const baseLayer = new ImageLayer({
+        const orographyLayer = new ImageLayer({
             source:new Static({
                 url: baseUrl +'Mosaico-Cuba-Norte-1km.gif',
                 projection: map_proj,
                 imageExtent: baseExtend,
+            })
+        });
+        
+        //A Raster base layer	
+        const osmLayer = new TileLayer({
+            source: new OSM(),
+            visible: false
         })
-    });
 
         // Layer with the desired product
-        let productLayer = new ImageLayer({
+        let productLayer = new ImageLayer('product',{
             source: createProductSource(product),
             opacity: 0.5
         });
@@ -71,7 +79,8 @@
         let trendsLayer = new VectorLayer({source: createTrendsSource(stormSettings)});
         
         // ------------------------------------
-        return ({'base': baseLayer,
+        return ({'orography': orographyLayer,
+                'osm':osmLayer,
                 'product': productLayer,
                 'cover': coverLayer,
                 'trends': trendsLayer});
