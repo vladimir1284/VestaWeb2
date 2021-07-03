@@ -5,7 +5,7 @@
     import proj4 from 'proj4';
     import {getCenter} from 'ol/extent';
     import {register} from 'ol/proj/proj4';
-    import {MousePosition, defaults, Control} from 'ol/control'
+    import {MousePosition, defaults} from 'ol/control'
     import {createStringXY} from 'ol/coordinate';
     import Overlay from 'ol/Overlay';
     import {transform} from 'ol/proj';
@@ -16,27 +16,29 @@
     import StormModal from './StormModal.svelte'
     import StormTable from './StormTable.svelte'
     import Trends from './Trends.svelte'
-    import { Icon } from 'sveltestrap';
     import LayerSwitch, {layerController} from './LayerSwitch.svelte'
     import { getLayers } from './Layers.svelte'
+    import Legend, {legendController} from './Legend'
 
-    import { radars, currentRadar, mapExtend, mapProj, storms } from './store.js'
+    import { radars, currentRadar, mapExtend, mapProj, storms, availableProducts } from './store.js'
     import { get } from 'svelte/store'
-
-    // State variables
-    let layers
-    let map_layers
-    let show_storms = true
-    let StormData = {'show':false, 'storm':null}
-    let showStormTable = false
-    let show_label = false
-    let stormSettings = {}
 
     const radar_list = get(radars)
     const storm_list = get(storms)
     const radar = get(currentRadar)
     const baseExtend = get(mapExtend)
     const map_proj = get(mapProj)
+    const raster_products = get(availableProducts)
+
+    // State variables
+    let layers
+    let map_layers
+    // let show_storms = true
+    let StormData = {'show':false, 'storm':null}
+    let showStormTable = false
+    let show_label = false
+    let stormSettings = {}
+    let selectedProduct = raster_products[0];
 
     // Initialize storm settings
     storm_list.forEach(function (storm, index){
@@ -64,13 +66,15 @@
     register(proj4);
 
     function createMap(){
-
         const mousePositionControl = new MousePosition({
             coordinateFormat: createStringXY(4),
             projection: 'EPSG:4326',
             undefinedHTML: '',
         });
         
+        // Layer switcher object
+        let legendControl = legendController();
+
         // Layer switcher object
         let LayerSwitchControl = layerController();
 
@@ -82,7 +86,9 @@
                         layers['cover'],
                         layers['trends']]
         const map = new Map({
-            controls: defaults().extend([mousePositionControl, LayerSwitchControl]),
+            controls: defaults().extend([mousePositionControl, 
+                                        LayerSwitchControl, 
+                                        legendControl]),
             view: new View({
             projection: map_proj,
             center:getCenter(baseExtend),
@@ -128,7 +134,6 @@
     onMount(mapAction);
 </script>
 
-
 <div id="map" class="map"></div>
 <div id="mouse-position"></div>
 
@@ -159,7 +164,10 @@
     layers={layers} 
     bind:stormSettings={stormSettings}
     bind:showStormTable={showStormTable}
+    bind:selectedProduct={selectedProduct}
 />
+
+<Legend selectedProduct={selectedProduct}/>
 
 <Trends stormSettings={stormSettings}/>
 

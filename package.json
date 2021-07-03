@@ -18,9 +18,10 @@
   "dependencies": {
     "chart.js": "^3.4.0",
     "chartjs-plugin-annotation": "^1.0.2",
+    "d3": "^7.0.0",
     "luxon": "^1.27.0",
-    "ol": "6.5.0",
-    "proj4": "2.2.1",
+    "ol": "^6.5.0",
+    "proj4": "^2.2.1",
     "svelte-material-icons": "^1.0.3",
     "sveltestrap": "^5.2.1"
   }

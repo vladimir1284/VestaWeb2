@@ -1,22 +1,15 @@
 <script>
-  import {ImageStatic as Static} from 'ol/source';
   import { FormGroup, Button, Popover, Input, Label, DropdownItem, 
-           Tooltip, InputGroup, InputGroupText, Icon } from 'sveltestrap';
-  import { product_base_url, currentRadar, currentProduct, 
-           current_datetime, availableProducts} from './store.js'
+           Tooltip, InputGroup } from 'sveltestrap';
+  import { availableProducts, currentProduct } from './store.js'
   import { get } from 'svelte/store'
   import {createProductSource, createCoverSource} from './Layers.svelte'
   import Settings from 'svelte-material-icons/Settings.svelte'
   import LayersOutline from 'svelte-material-icons/LayersOutline.svelte'
 
-  const baseUrl = get(product_base_url)
-  const radar = get(currentRadar)
-  const product = get(currentProduct)
-  const datetime = get(current_datetime)
   const raster_products = get(availableProducts)
 
-  let selectedProduct = raster_products[0];
-  let range = selectedProduct.range
+  let range = 0
   let productOpacity = 0.5;
   let showCover = true
   let show_storms = true
@@ -24,6 +17,7 @@
   export let showStormTable
   export let layers
   export let stormSettings
+  export let selectedProduct = get(currentProduct)
   let baseLayer = 'orography'
 
   // Modify strom cells visibility

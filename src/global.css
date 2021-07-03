@@ -6,6 +6,10 @@ body {
 	right: 20px;
 	top: 60px;
 }
+.legend_control   {
+	left: 0px;
+	bottom: 0px;
+}
 .ol-mouse-position{
 	color: white;
 	background-color:rgba(0,60,136,0.5);

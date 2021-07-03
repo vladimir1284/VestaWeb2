@@ -1,4 +1,5 @@
 import { writable, readable } from 'svelte/store'
+import { refl_16, hires_refl, et_16 } from './palettes.js';
 var { DateTime } = require('luxon');
 
 export const product_base_url = readable('imgs/')
@@ -24,17 +25,20 @@ export const currentRadar = writable(ccnr)
 const cr_38 = {
     'id': "CR_38",
     'range':464000,
-    'name': "Máximos 640km"
+    'name': "Máximos 640km",
+    'palette': refl_16
 }
 const dr_94 = {
     'id': "DR_94",
     'range':464000,
-    'name': "Reflectividad base"
+    'name': "Reflectividad base",
+    'palette': hires_refl
 }
 const et_41 = {
     'id': "ET_41",
     'range':232000,
-    'name': "Topes"
+    'name': "Topes",
+    'palette': et_16
 }
 
 export const availableProducts = writable([
