@@ -1,16 +1,12 @@
 <script>
-  import Chart from './StormCharts/Chart.svelte';
   import {Modal, ModalBody, ModalHeader,
           Table, Input, InputGroup, Tooltip} from 'sveltestrap';
-  import { current_datetime, currentRadar, storms } from './store';
+  import { current_datetime, currentRadar  } from '../store';
+  import {storms} from '../db/storms'
   import { get } from 'svelte/store'
-  var { DateTime } = require('luxon');
-  import TableLarge from 'svelte-material-icons/TableLarge.svelte'
-  import Image from 'svelte-material-icons/Image.svelte'
 
   const datetime = get(current_datetime)
   const radar = get(currentRadar)
-  const storm_list = get(storms)
 
   export let showStormTable
   export let show_label
@@ -74,7 +70,7 @@
 
 <Modal isOpen={showStormTable} {toggle} backdrop={false} size = 'lg'>
   <ModalHeader {toggle}>
-    Radar: <b>{radar.id}</b> Celdas: <b>{storm_list.length}</b>
+    Radar: <b>{radar.id}</b> Celdas: <b>{storms.length}</b>
     <span class='date'>&emsp {datetime.setZone('local').toFormat('dd/MMM/y HH:mma')}</span> 
   </ModalHeader>
   <ModalBody>
@@ -102,7 +98,7 @@
         </tr>
       </thead>
       <tbody>
-        {#each storm_list as storm}
+        {#each storms as storm}
           <tr>
             <th scope="row">{storm.id}</th>
             <th>

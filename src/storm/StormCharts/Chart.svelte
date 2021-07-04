@@ -1,6 +1,5 @@
 <script>
     import { onMount } from 'svelte';
-    import Chart from 'chart.js/auto'
     import { Col, Container, Row } from 'sveltestrap';
     import {getHeightsChart} from './heights.js'
     import {getHailChart} from './hail.js'

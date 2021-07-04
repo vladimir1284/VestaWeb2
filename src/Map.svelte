@@ -12,23 +12,22 @@
 
     import { onMount } from 'svelte';
     import RadarOL from './RadarOL.svelte';
-    import StormOL from './StormOL.svelte';
-    import StormModal from './StormModal.svelte'
-    import StormTable from './StormTable.svelte'
-    import Trends from './Trends.svelte'
-    import LayerSwitch, {layerController} from './LayerSwitch.svelte'
-    import { getLayers } from './Layers.svelte'
-    import Legend, {legendController} from './Legend'
+    import StormOL from './storm/StormOL.svelte';
+    import StormModal from './storm/StormModal.svelte'
+    import StormTable from './storm/StormTable.svelte'
+    import Trends from './storm/Trends.svelte'
+    import LayerSwitch, {layerController} from './controls/LayerSwitch.svelte'
+    import { getLayers } from './Layers'
+    import Legend, {legendController} from './controls/Legend'
+    import Logo, {logoController} from './controls/Logo'
 
-    import { radars, currentRadar, mapExtend, mapProj, storms, availableProducts } from './store.js'
+    import { currentRadar, mapExtend, mapProj } from './store.js'
+    import { radars } from './db/radars.js';
+    import {availableProducts} from './db/products'
+    import {storms} from './db/storms'
     import { get } from 'svelte/store'
 
-    const radar_list = get(radars)
-    const storm_list = get(storms)
     const radar = get(currentRadar)
-    const baseExtend = get(mapExtend)
-    const map_proj = get(mapProj)
-    const raster_products = get(availableProducts)
 
     // State variables
     let layers
@@ -38,10 +37,10 @@
     let showStormTable = false
     let show_label = false
     let stormSettings = {}
-    let selectedProduct = raster_products[0];
+    let selectedProduct = availableProducts[0];
 
     // Initialize storm settings
-    storm_list.forEach(function (storm, index){
+    storms.forEach(function (storm, index){
         stormSettings[storm.id] = {
             'future': true,
             'past': true,
@@ -58,7 +57,7 @@
             " +k_0=0.99993602 +x_0=500000 +y_0=280296.016"+
             " +ellps=clrk66 +units=m +datum=NAD27 +no_defs");
     
-    radar_list.forEach(function (radar, index){
+    radars.forEach(function (radar, index){
         proj4.defs(radar.id,
             `+proj=aeqd +lat_0=${radar.location.lat} +lon_0=${radar.location.lon}` +
             "+x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs");
@@ -72,8 +71,11 @@
             undefinedHTML: '',
         });
         
-        // Layer switcher object
+        // Legend object
         let legendControl = legendController();
+
+        // Logo
+        let logoControl = logoController();
 
         // Layer switcher object
         let LayerSwitchControl = layerController();
@@ -88,10 +90,11 @@
         const map = new Map({
             controls: defaults().extend([mousePositionControl, 
                                         LayerSwitchControl, 
-                                        legendControl]),
+                                        legendControl,
+                                        logoControl]),
             view: new View({
-            projection: map_proj,
-            center:getCenter(baseExtend),
+            projection: mapProj,
+            center:getCenter(mapExtend),
             zoom: 7
             }),
             layers: map_layers,
@@ -99,23 +102,23 @@
         });
 
         // Overlay en la ubicación de los radares
-        radar_list.forEach(function (radar, index){
+        radars.forEach(function (radar, index){
             const radar_ol = new Overlay({
                 element: document.getElementById(`radar-${radar.id}`),
                 positioning: 'center-center'
             });
-            radar_ol.setPosition(transform([0,0], radar.id, map_proj));
+            radar_ol.setPosition(transform([0,0], radar.id, mapProj));
             map.addOverlay(radar_ol);
         });        
         
         // Overlay de las tormentas
-        storm_list.forEach(function (storm, index){
+        storms.forEach(function (storm, index){
             const storm_ol = new Overlay({
                 'id':storm.id,
                 element: document.getElementById(`storm-${storm.id}`),
                 positioning: 'center-center'
             });
-            storm_ol.setPosition(transform([storm.Ipos,storm.Jpos], radar.id, map_proj));
+            storm_ol.setPosition(transform([storm.Ipos,storm.Jpos], radar.id, mapProj));
             map.addOverlay(storm_ol);
         });
      return map   
@@ -139,14 +142,14 @@
 
 <!-- Mostrar las celdas de tormenta -->
 <StormOL 
-    storm_list={storm_list} 
+    storm_list={storms} 
     stormSettings={stormSettings} 
     bind:StormData={StormData}
     show_label={show_label}
 />
 
 <!-- Mostrar los emplazamientos de radar -->
-{#each radar_list as radar}
+{#each radars as radar}
     <RadarOL radar={radar}/>
 {/each}
 
@@ -168,6 +171,7 @@
 />
 
 <Legend selectedProduct={selectedProduct}/>
+<Logo/>
 
 <Trends stormSettings={stormSettings}/>
 

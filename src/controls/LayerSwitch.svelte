@@ -1,13 +1,13 @@
 <script>
   import { FormGroup, Button, Popover, Input, Label, DropdownItem, 
            Tooltip, InputGroup } from 'sveltestrap';
-  import { availableProducts, currentProduct } from './store.js'
+  import { currentProduct } from '../store.js'
   import { get } from 'svelte/store'
-  import {createProductSource, createCoverSource} from './Layers.svelte'
+  import {createProductSource, createCoverSource} from '../Layers'
+  import {availableProducts} from '../db/products'
   import Settings from 'svelte-material-icons/Settings.svelte'
   import LayersOutline from 'svelte-material-icons/LayersOutline.svelte'
 
-  const raster_products = get(availableProducts)
 
   let range = 0
   let productOpacity = 0.5;
@@ -18,7 +18,7 @@
   export let layers
   export let stormSettings
   export let selectedProduct = get(currentProduct)
-  let baseLayer = 'orography'
+  let baseLayer = 'osm'
 
   // Modify strom cells visibility
   $:{
@@ -95,7 +95,7 @@
   </div>
   <FormGroup>
     <Label for="productOpacity" class="layer-header"><h6>Producto:</h6></Label>
-    {#each raster_products as product}
+    {#each availableProducts as product}
       <Input id={product.id} type="radio" bind:group={selectedProduct} value={product} label={product.name}/>
     {/each}
     <Input

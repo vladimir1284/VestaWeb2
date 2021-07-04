@@ -1,16 +1,14 @@
 <script>
   import Chart from './StormCharts/Chart.svelte';
-  import {Modal, ModalBody, ModalHeader
-          } from 'sveltestrap';
-  import { current_datetime, currentRadar, adata } from './store';
+  import {Modal, ModalBody, ModalHeader } from 'sveltestrap';
+  import { current_datetime, currentRadar,  } from '../store';
+  import {adata} from '../db/storms'
   import { get } from 'svelte/store'
-  var { DateTime } = require('luxon');
   import TableLarge from 'svelte-material-icons/TableLarge.svelte'
   import Image from 'svelte-material-icons/Image.svelte'
 
   const datetime = get(current_datetime)
   const radar = get(currentRadar)
-  const adata_text = get(adata)
 
   export let StormData
 
@@ -46,7 +44,7 @@
     {#if data} 
       <Chart storm={StormData.storm}/>
     {:else}
-      <textarea class="text" rows=27 cols=80>{adata_text}</textarea>    
+      <textarea class="text" rows=27 cols=80>{adata}</textarea>    
     {/if}    
   </ModalBody>
 </Modal>

@@ -1,5 +1,5 @@
 <script>
-  import { Popover, Tooltip } from 'sveltestrap';
+  import { Tooltip } from 'sveltestrap';
 
   export let storm_list
   export let show_label

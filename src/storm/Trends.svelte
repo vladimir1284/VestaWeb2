@@ -6,12 +6,11 @@
   import MultiLineString from 'ol/geom/MultiLineString';
   import { transform } from "ol/proj";
 
-  import { storms, currentRadar, mapProj } from "./store";
+  import { currentRadar, mapProj } from "../store";
+  import {storms} from '../db/storms'
   import { get } from "svelte/store";
 
-  const storm_list = get(storms);
   const radar = get(currentRadar);
-  const map_proj = get(mapProj);
 
   let features = {};
   const fill_past = new Fill({
@@ -61,7 +60,7 @@
           transform(
             [parseInt(coords[0]), parseInt(coords[1])],
             radar.id,
-            map_proj
+            mapProj
           )
         );
       }
@@ -92,7 +91,7 @@
 
   // Generate trend features
   function insertFeatures(stormSettings, source, is_past){
-    storm_list.forEach(function (storm, index) {
+    storms.forEach(function (storm, index) {
       // Create past features
       const points_list = is_past?storm.past:storm.forecast
       const points = getPointsFromStr(points_list);
@@ -113,7 +112,7 @@
         for (var i = 0; i < (points.length-1); i++){
           lines.push([points[i], points[i+1]])
         }
-        const lastSegment = [points[0], transform([storm.Ipos, storm.Jpos], radar.id, map_proj)]
+        const lastSegment = [points[0], transform([storm.Ipos, storm.Jpos], radar.id, mapProj)]
         lines.push(lastSegment)
         if (is_past){
           lines = lines.concat(arrow(lastSegment))
@@ -158,7 +157,7 @@
       try{
         if(Object.keys(features).length != 0){
           // Esta función solo es reactiva ante cambios en stormSettings
-          storm_list.forEach(function (storm, index) {
+          storms.forEach(function (storm, index) {
             const show_past = stormSettings[storm.id].past && stormSettings[storm.id].visible
             features[storm.id].past[0].setStyle(show_past?style_past:style_hidden)
             if (features[storm.id].past[1]){
