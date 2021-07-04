@@ -12,7 +12,7 @@ function filterProbability(data) {
     return filtered
 }
 
-export function getHailChart(canvasID, storm, labels){
+export function getHailChart(canvasID, storm, labels, text){
     // Data for the Centroid and the height of the máximum reflectivity
     let poh = filterProbability(storm.poh)
     poh = [null].concat(poh)
@@ -22,13 +22,13 @@ export function getHailChart(canvasID, storm, labels){
     const data_hail = {
         labels: labels,
         datasets: [{
-            label: 'POH',
+            label: text.poh,
             backgroundColor: 'black',
             borderColor: 'black',
             data: poh,
         },
         {
-            label: 'POSH',
+            label: text.posh,
             backgroundColor: 'green',
             borderColor: 'green',
             data: posh,

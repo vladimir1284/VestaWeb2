@@ -1,6 +1,6 @@
-# svelte app
+# VestaWeb2
 
-This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template-webpack.
+Esta es la aplicación VestaWeb2 del Centro Nacional de Radares del Instituto de Meteorología. Reside en https://github.com/vladimir1284/VestaWeb2.
 
 To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
 
@@ -9,57 +9,57 @@ npx degit sveltejs/template-webpack svelte-app
 cd svelte-app
 ```
 
-*Note that you will need to have [Node.js](https://nodejs.org) installed.*
+*Necesita tener instalado [Node.js](https://nodejs.org).*
 
 
-## Get started
+## Comenzar
 
-Install the dependencies...
+Instalar las dependencias...
 
 ```bash
 cd svelte-app
 npm install
 ```
 
-...then start webpack:
+...iniciar webpack:
 
 ```bash
 npm run dev
 ```
 
-Navigate to [localhost:8080](http://localhost:8080). You should see your app running. Edit a component file in `src`, save it, and the page should reload with your changes.
+Navega en [localhost:8080](http://localhost:8080). Debe verse la aplicación corriendo. Edita cualquier fichero en `src`, guardálo, y la página debe recargar con tus cambios.
 
 
-## Deploying to the web
+## Desplegando en la red
 
-### With [now](https://zeit.co/now)
+### Con [now](https://zeit.co/now)
 
-Install `now` if you haven't already:
+Instalar `now` se no lo tiene instalado:
 
 ```bash
 npm install -g now
 ```
 
-Then, from within your project folder:
+Entonces, desde dentro de la carpeta del proyecto:
 
 ```bash
 now
 ```
 
-As an alternative, use the [Now desktop client](https://zeit.co/download) and simply drag the unzipped project folder to the taskbar icon.
+Alternativamente, use el [cliente desktop de Now](https://zeit.co/download) y simplemente arrastre el proyecto descomprimido hacia el ícono de la barra de tareas.
 
-### With [surge](https://surge.sh/)
+### Con [surge](https://surge.sh/)
 
-Install `surge` if you haven't already:
+Instalar `surge` se no lo tiene instalado:
 
 ```bash
 npm install -g surge
 ```
 
-Then, from within your project folder:
+Entonces, desde dentro de la carpeta del proyecto:
 
 ```bash
 npm run build
 surge public
 ```
-# VestaWeb2
+

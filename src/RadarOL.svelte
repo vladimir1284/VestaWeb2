@@ -1,5 +1,7 @@
 <script>
-  import { Popover } from 'sveltestrap';
+  import { Tooltip } from 'sveltestrap';
+  import { _ } from './services/i18n';
+var { DateTime } = require('luxon');
 
   export let radar;
 </script>
@@ -7,14 +9,14 @@
 <button class="radar" id={"radar-"+radar.id}></button>
 
 <div class="mt-3">
-<Popover 
+<Tooltip 
   trigger="focus" 
   target={"radar-"+radar.id}
-  placement = 'top' 
-  title={radar.name}>
-    Esta es una berve descripción del radar de {radar.name}.
-    <a href="https://www.merriam-webster.com/dictionary/modal">Leer más...</a>
-</Popover>
+  placement = 'top'>
+  {$_('StormModal.radar')} {radar.id} <br>
+  {$_('Radar.status')} {radar.status}<br>
+  {$_('Radar.last_scan')} {(DateTime.now().diff(radar.last)/60000).toFixed()}{$_('Radar.min')}
+</Tooltip>
 </div>
 
 <style>

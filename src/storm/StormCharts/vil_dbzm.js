@@ -1,19 +1,19 @@
 import Chart from 'chart.js/auto'
 
-export function getVilChart(canvasID, storm, labels){
+export function getVilChart(canvasID, storm, labels, text){
     // Data for the cell based VIL and the maximum reflectivity         
     const maxZ = [null].concat(storm.maxZ)          
     const vil = [null].concat(storm.vil)   
     const data_vil_dbzm = {
         labels: labels,
         datasets: [{
-            label: 'DBZM',
+            label: text.dbzm,
             backgroundColor: 'red',
             borderColor: 'red',
             data: maxZ,
         },
         {
-            label: 'CB VIL',
+            label: text.vil,
             backgroundColor: 'blue',
             borderColor: 'blue',
             data: vil,
@@ -24,7 +24,7 @@ export function getVilChart(canvasID, storm, labels){
             y: {
                 title: {
                     display: true,
-                    text: "dbZ - kg/m^2"
+                    text: text.unit
                 }
             }
         }

@@ -23,19 +23,16 @@ const hires_refl = {
 const cr_38 = {
     'id': "CR_38",
     'range':464000,
-    'name': "Máximos 640km",
     'palette': refl_16
 }
 const dr_94 = {
     'id': "DR_94",
     'range':464000,
-    'name': "Reflectividad base",
     'palette': hires_refl
 }
 const et_41 = {
     'id': "ET_41",
     'range':232000,
-    'name': "Topes",
     'palette': et_16
 }
 

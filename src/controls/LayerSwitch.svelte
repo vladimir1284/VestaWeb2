@@ -1,5 +1,5 @@
 <script>
-  import { FormGroup, Button, Popover, Input, Label, DropdownItem, 
+  import { FormGroup, Button, Popover, Input, DropdownItem, 
            Tooltip, InputGroup } from 'sveltestrap';
   import { currentProduct, defaultBaseLayer } from '../store'
   import { get } from 'svelte/store'
@@ -7,6 +7,7 @@
   import {availableProducts} from '../db/products'
   import Settings from 'svelte-material-icons/Settings.svelte'
   import LayersOutline from 'svelte-material-icons/LayersOutline.svelte'
+  import { _ } from '../services/i18n';
 
 
   let range = 0
@@ -92,12 +93,11 @@
 
 <Popover placement="bottom" target="layer_switch_btn">
   <div slot="title">
-    Gestionar capas 
+    {$_('LayerSwitch.title')}
   </div>
   <FormGroup>
-    <Label for="productOpacity" class="layer-header"><h6>Producto:</h6></Label>
     {#each availableProducts as product}
-      <Input id={product.id} type="radio" bind:group={selectedProduct} value={product} label={product.name}/>
+      <Input id={product.id} type="radio" bind:group={selectedProduct} value={product} label={$_('LayerSwitch.pname')[product.id]}/>
     {/each}
     <Input
       type="range"
@@ -107,10 +107,10 @@
       max={1}
       step={0.1}
       bind:value={productOpacity}
-      placeholder="Opacidad" />    
+      placeholder= {$_('LayerSwitch.opacity')}/>    
 
     <InputGroup>
-      <Input id="show-storm" type="checkbox" bind:checked={show_storms} label="Celdas de tormenta"/>
+      <Input id="show-storm" type="checkbox" bind:checked={show_storms} label={$_('LayerSwitch.storm_cell')}/>
       <button class="edit-storm" on:click={toggle}>
         <Settings color="#0d6efd" size="1.5em"/>
       </button>   
@@ -118,27 +118,27 @@
   </FormGroup>
 
   <FormGroup>
-    <Input id="c1" type="checkbox" bind:checked={showCover} label="Cobertura" />
+    <Input id="c1" type="checkbox" bind:checked={showCover} label="{$_('LayerSwitch.cover')}" />
   </FormGroup>
 
   <DropdownItem divider />
 
   <Input type="select" name="baseLayer" id="baseLayer" bind:value={baseLayer}>
-    <option value='orography'>Orografía</option>
-    <option value='osm'>Político</option>
+    <option value='orography'>{$_('LayerSwitch.map.orography')}</option>
+    <option value='osm'>{$_('LayerSwitch.map.osm')}</option>
   </Input>
 
   <Tooltip
     placement="left"
     target="baseLayer">
-    Mapa de fondo
+    {$_('LayerSwitch.map_too1tip')}
   </Tooltip>
 </Popover>
 
 <Tooltip
   placement="left"
   target="layer_switch_btn">
-  Gestionar capas
+  {$_('LayerSwitch.btn_too1tip')}
 </Tooltip>
 
 

@@ -6,6 +6,7 @@
     import {getVilChart} from './vil_dbzm.js'
     import {drawAzran} from './azran.js'
     var { DateTime } = require('luxon');
+    import { _ } from '../../services/i18n';
 
     export let storm
 
@@ -18,10 +19,23 @@
             labels.push(time.toFormat("HH:mm"))
         })
         labels.push(null)
-
-        var hgtsChart = getHeightsChart('alturas', storm, labels)
-        var hailChart = getHailChart('hail', storm, labels)
-        var vil_dbzmChart = getVilChart('vil_dbzm', storm, labels)
+        let text = {
+            centroid: $_('StormModal.height.centroid'),
+            dbzm: $_('StormModal.height.dbzm'),
+            unit: $_('StormModal.height.unit'),
+        }
+        var hgtsChart = getHeightsChart('alturas', storm, labels, text)
+        text = {
+            poh: $_('StormModal.hail.poh'),
+            posh: $_('StormModal.hail.posh'),
+        }
+        var hailChart = getHailChart('hail', storm, labels, text)
+        text = {
+            vil: $_('StormModal.vil.vil'),
+            dbzm: $_('StormModal.vil.dbzm'),
+            unit: $_('StormModal.vil.unit'),
+        }
+        var vil_dbzmChart = getVilChart('vil_dbzm', storm, labels, text)
         var azranChart = drawAzran('azran', storm)
         return {
             destroy: () => {

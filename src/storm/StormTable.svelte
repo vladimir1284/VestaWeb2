@@ -3,6 +3,7 @@
           Table, Input, InputGroup, Tooltip} from 'sveltestrap';
   import { current_datetime, currentRadar  } from '../store';
   import {storms} from '../db/storms'
+  import { _ } from '../services/i18n';
 
   export let showStormTable
   export let show_label
@@ -54,8 +55,6 @@
   function kft2kmSTR(value, gl){
     let str_value=""
     if (value > 70){
-      // TODO somehow indicate that lowest elevation 
-      // was used for obtainig this value
       value-= 100 
       str_value += gl
     }
@@ -66,31 +65,31 @@
 
 <Modal isOpen={showStormTable} {toggle} backdrop={false} size = 'lg'>
   <ModalHeader {toggle}>
-    currentRadar: <b>{currentRadar.id}</b> Celdas: <b>{storms.length}</b>
+    {$_('StormTable.radar')}: <b>{currentRadar.id}</b> {$_('StormTable.cells')} <b>{storms.length}</b>
     <span class='date'>&emsp {current_datetime.setZone('local').toFormat('dd/MMM/y HH:mma')}</span> 
   </ModalHeader>
   <ModalBody>
     <InputGroup>
       Mostrar:&emsp
-      <Input id="labels" type="checkbox" bind:checked={show_label} label="Etiquetas" /> 
+      <Input id="labels" type="checkbox" bind:checked={show_label} label={$_('StormTable.label')} /> 
       <div>&emsp</div>      
-      <Input id="futuro" type="checkbox" bind:checked={future} label="Pronóstico"/> 
+      <Input id="futuro" type="checkbox" bind:checked={future} label={$_('StormTable.forecast')}/> 
       <div>&emsp</div>      
-      <Input id="pasado" type="checkbox" bind:checked={past} label="Histórico"/> 
+      <Input id="pasado" type="checkbox" bind:checked={past} label={$_('StormTable.past')}/> 
     </InputGroup>
     <Table striped responsive class="tableFixHead">
       <thead class="text-center">
         <tr>
-          <th class="text-start">ID</th>
-          <th id="visible">V</th>
-          <th id="future">P</th>
-          <th id="past">H</th>
-          <th>AZ(&deg;) DIS(km)</th>
-          <th>BASE (km)</th>
-          <th>TOPE (km)</th>
-          <th>VIL (kg/m<sup>2</sup>)</th>
-          <th>MAX Z (dbZ)</th>
-          <th>CENT (km)</th>
+          <th class="text-start">{$_('StormTable.id')}</th>
+          <th id="visible">{$_('StormTable.visibility')}</th>
+          <th id="future">{$_('StormTable.check.forecast')}</th>
+          <th id="past">{$_('StormTable.check.past')}</th>
+          <th>AZ(&deg;) {$_('StormTable.azran')}</th>
+          <th>{$_('StormTable.base')}</th>
+          <th>{$_('StormTable.top')}</th>
+          <th>{$_('StormTable.vil')} (kg/m<sup>2</sup>)</th>
+          <th>{$_('StormTable.maxz')}</th>
+          <th>{$_('StormTable.centroid')}</th>
         </tr>
       </thead>
       <tbody>
@@ -121,9 +120,9 @@
       </tbody>
     </Table>
   </ModalBody>
-  <Tooltip target={"visible"} placement='top'>Mostrar Celda</Tooltip>
-  <Tooltip target={"past"} placement='top'>Mostrar Histórico</Tooltip>
-  <Tooltip target={"future"} placement='top'>Mostrar Pronóstico</Tooltip>
+  <Tooltip target={"visible"} placement='top'>{$_('StormTable.tooltip.visibility')}</Tooltip>
+  <Tooltip target={"past"} placement='top'>{$_('StormTable.tooltip.past')}</Tooltip>
+  <Tooltip target={"future"} placement='top'>{$_('StormTable.tooltip.forecast')}</Tooltip>
 </Modal>
 
 <style>

@@ -34,7 +34,7 @@ function convertArrKft2Km(data) {
     return converted
 }
     
-export function getHeightsChart(canvasID, storm, labels){
+export function getHeightsChart(canvasID, storm, labels, text){
 
     // Convert from ft to km
     let centroids = convertArrKft2Km(storm.centroids)
@@ -91,13 +91,13 @@ export function getHeightsChart(canvasID, storm, labels){
     const data_hgts = {
         labels: labels,
         datasets: [{
-            label: 'CENT',
+            label: text.centroid,
             backgroundColor: 'purple',
             borderColor: 'purple',
             data: centroids,
         },
         {
-            label: 'DBZM',
+            label: text.dbzm,
             backgroundColor: 'red',
             borderColor: 'red',
             data: max_ref_hgts,
@@ -113,7 +113,7 @@ export function getHeightsChart(canvasID, storm, labels){
             y: {
                 title: {
                     display: true,
-                    text: "km"
+                    text: text.unit
                 },
                 min: 0
             }

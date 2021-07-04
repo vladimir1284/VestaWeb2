@@ -3,9 +3,9 @@
   import {Modal, ModalBody, ModalHeader } from 'sveltestrap';
   import { current_datetime, currentRadar,  } from '../store';
   import {adata} from '../db/storms'
-  import { get } from 'svelte/store'
   import TableLarge from 'svelte-material-icons/TableLarge.svelte'
   import Image from 'svelte-material-icons/Image.svelte'
+  import { _ } from '../services/i18n';
 
   export let StormData
 
@@ -27,7 +27,7 @@
 
 <Modal isOpen={StormData.show} {toggle} backdrop={false} size = 'lg'>
   <ModalHeader {toggle}>
-    currentRadar: <b>{currentRadar.id}</b> Celda: <b>{StormData.storm.id}</b>
+    {$_('StormModal.radar')}: <b>{currentRadar.id}</b> {$_('StormModal.cell')} <b>{StormData.storm.id}</b>
     <span class='date'>&emsp {current_datetime.setZone('local').toFormat('dd/MMM/y HH:mma')}</span> 
     <button class="adata" on:click={data?showAdata:showData}>
       {#if data} 
