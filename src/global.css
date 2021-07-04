@@ -9,6 +9,8 @@ body {
 .legend_control   {
 	left: 0px;
 	bottom: 0px;
+	user-select: none;
+	cursor: move;
 }
 div.logo_control   {
 	background-color: transparent;

@@ -3,10 +3,6 @@
           Table, Input, InputGroup, Tooltip} from 'sveltestrap';
   import { current_datetime, currentRadar  } from '../store';
   import {storms} from '../db/storms'
-  import { get } from 'svelte/store'
-
-  const datetime = get(current_datetime)
-  const radar = get(currentRadar)
 
   export let showStormTable
   export let show_label
@@ -70,8 +66,8 @@
 
 <Modal isOpen={showStormTable} {toggle} backdrop={false} size = 'lg'>
   <ModalHeader {toggle}>
-    Radar: <b>{radar.id}</b> Celdas: <b>{storms.length}</b>
-    <span class='date'>&emsp {datetime.setZone('local').toFormat('dd/MMM/y HH:mma')}</span> 
+    currentRadar: <b>{currentRadar.id}</b> Celdas: <b>{storms.length}</b>
+    <span class='date'>&emsp {current_datetime.setZone('local').toFormat('dd/MMM/y HH:mma')}</span> 
   </ModalHeader>
   <ModalBody>
     <InputGroup>

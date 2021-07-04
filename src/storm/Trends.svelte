@@ -8,9 +8,7 @@
 
   import { currentRadar, mapProj } from "../store";
   import {storms} from '../db/storms'
-  import { get } from "svelte/store";
 
-  const radar = get(currentRadar);
 
   let features = {};
   const fill_past = new Fill({
@@ -59,7 +57,7 @@
         points.push(
           transform(
             [parseInt(coords[0]), parseInt(coords[1])],
-            radar.id,
+            currentRadar.id,
             mapProj
           )
         );
@@ -112,7 +110,7 @@
         for (var i = 0; i < (points.length-1); i++){
           lines.push([points[i], points[i+1]])
         }
-        const lastSegment = [points[0], transform([storm.Ipos, storm.Jpos], radar.id, mapProj)]
+        const lastSegment = [points[0], transform([storm.Ipos, storm.Jpos], currentRadar.id, mapProj)]
         lines.push(lastSegment)
         if (is_past){
           lines = lines.concat(arrow(lastSegment))
@@ -153,17 +151,16 @@
 <script>
   export let stormSettings
 
-  $:{
-      try{
+  function updateTrendVisibility(settings) {
+    try{
         if(Object.keys(features).length != 0){
-          // Esta función solo es reactiva ante cambios en stormSettings
           storms.forEach(function (storm, index) {
-            const show_past = stormSettings[storm.id].past && stormSettings[storm.id].visible
+            const show_past = settings[storm.id].past && settings[storm.id].visible
             features[storm.id].past[0].setStyle(show_past?style_past:style_hidden)
             if (features[storm.id].past[1]){
               features[storm.id].past[1].setStyle(show_past?style_line:style_hidden)
             }            
-            const show_forecast = stormSettings[storm.id].future && stormSettings[storm.id].visible
+            const show_forecast = settings[storm.id].future && settings[storm.id].visible
             features[storm.id].forecast[0].setStyle(show_forecast?iconStyle:style_hidden)
             if (features[storm.id].forecast[1]){
               features[storm.id].forecast[1].setStyle(show_forecast?style_line:style_hidden)
@@ -173,5 +170,7 @@
       } catch (error) {
         console.error(error);
       }
-    }
+  }
+
+  $: updateTrendVisibility(stormSettings)
 </script>

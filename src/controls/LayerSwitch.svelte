@@ -1,7 +1,7 @@
 <script>
   import { FormGroup, Button, Popover, Input, Label, DropdownItem, 
            Tooltip, InputGroup } from 'sveltestrap';
-  import { currentProduct } from '../store.js'
+  import { currentProduct, defaultBaseLayer } from '../store'
   import { get } from 'svelte/store'
   import {createProductSource, createCoverSource} from '../Layers'
   import {availableProducts} from '../db/products'
@@ -17,8 +17,8 @@
   export let showStormTable
   export let layers
   export let stormSettings
-  export let selectedProduct = get(currentProduct)
-  let baseLayer = 'osm'
+  export let selectedProduct = currentProduct
+  let baseLayer = get(defaultBaseLayer)
 
   // Modify strom cells visibility
   $:{
@@ -57,6 +57,7 @@
       layers.orography.setVisible(false)
       layers.osm.setVisible(false)
       layers[baseLayer].setVisible(true)
+      defaultBaseLayer.set(baseLayer) // Persist
     }
   }
 

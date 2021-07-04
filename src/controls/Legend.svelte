@@ -187,24 +187,49 @@
             generateLegend(selectedProduct.palette)
         }
     }
+
 </script>
 
 <script context="module">
     import {Control} from 'ol/control'
+    let element
+    let left = 0;
+	let bottom = 0;
+	
+	let moving = false;
+	
+	function onMouseDown() {
+		moving = true;
+	}
+	
+	function onMouseMove(e) {
+		if (moving) {
+			left += e.movementX;
+			bottom -= e.movementY;
+		}
+        element.style.left = left
+        element.style.bottom = bottom
+	}
+	
+	function onMouseUp() {
+		moving = false;
+	}
   
     export function legendController(){
         const container = document.getElementById('legend_control_container');
         
-        let element = document.createElement('div');
+        element = document.createElement('div');
         element.className = 'legend_control ol-unselectable ol-control';
+        element.id="legend"
         element.appendChild(container);
   
       return new Control({element: element});
     }
 </script>
 
+<svelte:window on:mouseup={onMouseUp} on:mousemove={onMouseMove} />
 
-<div id="legend_control_container" >
+<div id="legend_control_container" on:mousedown={onMouseDown}>
     <div><svg id="legend_svg"></svg></div>    
     <div id="unit">{unit}</div>
 </div>

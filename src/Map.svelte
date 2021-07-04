@@ -21,13 +21,10 @@
     import Legend, {legendController} from './controls/Legend'
     import Logo, {logoController} from './controls/Logo'
 
-    import { currentRadar, mapExtend, mapProj } from './store.js'
-    import { radars } from './db/radars.js';
+    import { currentRadar, mapExtend, mapProj } from './store'
+    import { radars } from './db/radars';
     import {availableProducts} from './db/products'
     import {storms} from './db/storms'
-    import { get } from 'svelte/store'
-
-    const radar = get(currentRadar)
 
     // State variables
     let layers
@@ -118,7 +115,7 @@
                 element: document.getElementById(`storm-${storm.id}`),
                 positioning: 'center-center'
             });
-            storm_ol.setPosition(transform([storm.Ipos,storm.Jpos], radar.id, mapProj));
+            storm_ol.setPosition(transform([storm.Ipos,storm.Jpos], currentRadar.id, mapProj));
             map.addOverlay(storm_ol);
         });
      return map   
@@ -148,7 +145,7 @@
     show_label={show_label}
 />
 
-<!-- Mostrar los emplazamientos de radar -->
+<!-- Mostrar los emplazamientos de currentRadar -->
 {#each radars as radar}
     <RadarOL radar={radar}/>
 {/each}

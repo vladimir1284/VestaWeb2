@@ -7,9 +7,6 @@
   import TableLarge from 'svelte-material-icons/TableLarge.svelte'
   import Image from 'svelte-material-icons/Image.svelte'
 
-  const datetime = get(current_datetime)
-  const radar = get(currentRadar)
-
   export let StormData
 
   let data = true
@@ -30,8 +27,8 @@
 
 <Modal isOpen={StormData.show} {toggle} backdrop={false} size = 'lg'>
   <ModalHeader {toggle}>
-    Radar: <b>{radar.id}</b> Celda: <b>{StormData.storm.id}</b>
-    <span class='date'>&emsp {datetime.setZone('local').toFormat('dd/MMM/y HH:mma')}</span> 
+    currentRadar: <b>{currentRadar.id}</b> Celda: <b>{StormData.storm.id}</b>
+    <span class='date'>&emsp {current_datetime.setZone('local').toFormat('dd/MMM/y HH:mma')}</span> 
     <button class="adata" on:click={data?showAdata:showData}>
       {#if data} 
         <TableLarge color="gray" size="1.2em"/>

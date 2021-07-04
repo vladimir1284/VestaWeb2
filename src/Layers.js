@@ -10,23 +10,19 @@ import Polygon from 'ol/geom/Polygon';
 import {transform} from 'ol/proj';
 
 import {createTrendsSource} from './storm/Trends.svelte'
-import { mapExtend, product_base_url, currentRadar, currentProduct, current_datetime, mapProj} from './store.js'
-import { get } from 'svelte/store'
+import { mapExtend, base_url, currentRadar, currentProduct, current_datetime, mapProj} from './store'
 
-const radar = get(currentRadar)
-const product = get(currentProduct)
-const datetime = get(current_datetime)
 
 const fill = new Fill({
     color: 'rgba(255,255,255,0.1)'
     });
 const polygonCords = fromExtent(mapExtend).getCoordinates();
 
-export function createCoverSource(product){
+export function createCoverSource(currentProduct){
     const coverSource = new VectorSource({wrapX: false});
 
     const circleCoords = fromCircle(new Circle(
-                transform([0,0],radar.id,mapProj), product.range)).getCoordinates();
+                transform([0,0],currentRadar.id,mapProj), currentProduct.range)).getCoordinates();
     const coords = [polygonCords[0], circleCoords[0]];
     const inversePolygon = new Feature(new Polygon(coords));
     inversePolygon.setStyle(new Style({fill: fill}));
@@ -37,8 +33,8 @@ export function createCoverSource(product){
 
 export function createProductSource(product){
     return new Static({
-        url: product_base_url + radar.id + '/' + product.id + '_' + datetime.toFormat('yyyy-MM-dd_hh-mm-ss') + '.png',
-        projection: radar.id,
+        url: base_url + currentRadar.id + '/' + product.id + '_' + current_datetime.toFormat('yyyy-MM-dd_hh-mm-ss') + '.png',
+        projection: currentRadar.id,
         imageSmoothing: false,
         imageExtent: [-product.range, -product.range, 
                         product.range, product.range],
@@ -49,7 +45,7 @@ export function getLayers(stormSettings){
     //A Raster base layer	
     const orographyLayer = new ImageLayer({
         source:new Static({
-            url: product_base_url +'Mosaico-Cuba-Norte-1km.gif',
+            url: base_url +'Mosaico-Cuba-Norte-1km.gif',
             projection: mapProj,
             imageExtent: mapExtend,
         })
@@ -63,12 +59,12 @@ export function getLayers(stormSettings){
 
     // Layer with the desired product
     let productLayer = new ImageLayer('product',{
-        source: createProductSource(product),
+        source: createProductSource(currentProduct),
         opacity: 0.5
     });
 
     // ------------ Cover -----------------
-    let coverLayer = new VectorLayer({source: createCoverSource(product)});
+    let coverLayer = new VectorLayer({source: createCoverSource(currentProduct)});
 
     // ------------ Trends -----------------
     let trendsLayer = new VectorLayer({source: createTrendsSource(stormSettings)});
