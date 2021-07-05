@@ -1,7 +1,8 @@
 import { writable } from 'svelte-local-storage-store'
-
 import { availableProducts } from './db/products.js';
 import { radars } from './db/radars.js';
+import {getCenter} from 'ol/extent';
+
 var { DateTime } = require('luxon');
 
 export const base_url = 'imgs/'
@@ -22,4 +23,10 @@ export const mapExtend = [-302183.53173887, -409851.12978591,
                             1497816.46826113, 790148.87021409]
 
 export const defaultBaseLayer = writable('baseLayer', 'osm');
+
+const defaultCenter = getCenter(mapExtend)
+export const view = writable('view', {
+                                        zoom: 7,
+                                        center: defaultCenter
+                                    })
 

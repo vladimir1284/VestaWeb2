@@ -20,16 +20,20 @@
     import { getLayers } from './Layers'
     import Legend, {legendController} from './controls/Legend'
     import Logo, {logoController} from './controls/Logo'
+    import { get } from 'svelte/store'
 
-    import { currentRadar, mapExtend, mapProj } from './store'
+    import { currentRadar, mapProj, view } from './store'
     import { radars } from './db/radars';
     import {availableProducts} from './db/products'
     import {storms} from './db/storms'
 
+    // Settings
+    let zoom = get(view).zoom
+    let center = get(view).center
+
     // State variables
     let layers
     let map_layers
-    // let show_storms = true
     let StormData = {'show':false, 'storm':null}
     let showStormTable = false
     let show_label = false
@@ -84,18 +88,31 @@
                         layers['product'],
                         layers['cover'],
                         layers['trends']]
+
+        const mapView = new View({
+            projection: mapProj,
+            center: center,
+            zoom: zoom
+            })
+            mapView.on('change:center', function(){
+                center = mapView.getCenter()
+                view.set({zoom: zoom, center: center}) // Persist
+        });
+
         const map = new Map({
             controls: defaults().extend([mousePositionControl, 
                                         LayerSwitchControl, 
                                         legendControl,
                                         logoControl]),
-            view: new View({
-            projection: mapProj,
-            center:getCenter(mapExtend),
-            zoom: 7
-            }),
+            view: mapView,
             layers: map_layers,
             target: 'map'
+        });
+
+        map.on('moveend', function() {
+            zoom = map.getView().getZoom()
+            view.set({zoom: zoom, center: center}) // Persist    
+        
         });
 
         // Overlay en la ubicación de los radares
