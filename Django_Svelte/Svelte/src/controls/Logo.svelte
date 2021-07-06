@@ -18,7 +18,7 @@
 
 <style>
     #logo{
-	    background: no-repeat url('https://vesta-web.000webhostapp.com/imgs/logo.png');
+	    background: no-repeat url('http://localhost:8000/example/imgs/logo.png');
         width: 116px;
 	    height: 46px;
     }

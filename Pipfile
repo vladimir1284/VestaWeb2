@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 coderedcms = "*"
+psycopg2-binary = "*"
+django = "*"
 
 [requires]
 python_version = "3.6"

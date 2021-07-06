@@ -17,17 +17,17 @@ urlpatterns = [
     # Search
     path('search/', include(coderedsearch_urls)),
 
-    # For the example
-    path('example/', include('example.urls')),
+    # For vestaweb
+    path('vestaweb/', include('vestaweb.urls')),
 
     # For anything not caught by a more specific rule above, hand over to
     # the page serving mechanism. This should be the last pattern in
     # the list:
-    re_path(r'', include(codered_urls)),
+    # re_path(r'', include(codered_urls)),
 
     # Alternatively, if you want CMS pages to be served from a subpath
     # of your site, rather than the site root:
-    #    re_path(r"^pages/", include(codered_urls)),
+    # re_path(r"^pages/", include(codered_urls)),
 ]
 
 
@@ -36,5 +36,6 @@ if settings.DEBUG:
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
     # Serve static and media files from development server
+    urlpatterns += staticfiles_urlpatterns("vestaweb/")
     urlpatterns += staticfiles_urlpatterns("/")
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

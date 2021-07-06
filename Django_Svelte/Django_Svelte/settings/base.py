@@ -8,6 +8,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
+
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -27,6 +28,7 @@ BASE_DIR = os.path.dirname(PROJECT_DIR)
 INSTALLED_APPS = [
     # This project
     'website',
+    'vestaweb',
 
     # CodeRed CMS
     'coderedcms',
@@ -61,7 +63,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
-    'example',
 ]
 
 MIDDLEWARE = [
@@ -119,8 +120,12 @@ WSGI_APPLICATION = 'Django_Svelte.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'vesta-web',
+        'USER': 'vesta',
+        'PASSWORD': 'billar',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
