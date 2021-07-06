@@ -1,0 +1,47 @@
+body {
+	font: 14px "Century Gothic", Futura, sans-serif;
+	margin: 0px;
+}
+.layer-switch {
+	right: 20px;
+	top: 60px;
+}
+.animation_control{
+	right: 50%;
+	top: 0px;
+}
+#interval{
+	font-size: 1em;
+	height: 1.6em;
+}
+.legend_control   {
+	left: 0px;
+	bottom: 0px;
+	user-select: none;
+	cursor: move;
+}
+div.logo_control   {
+	background-color: transparent;
+	right: 0px;
+	bottom: 15px;
+}
+.ol-mouse-position{
+	color: white;
+	background-color:rgba(0,60,136,0.5);
+	padding: 5px 10px;
+	border-radius: 5px;
+}
+
+.layer-header{
+	color: #0d6efd;
+}
+.table-responsive {
+    overflow: auto;
+	height: 400px;
+  }
+
+.table-responsive thead th{
+	background-color:white;
+	position: sticky;
+	top: 0;
+}

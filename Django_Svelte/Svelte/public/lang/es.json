@@ -1,0 +1,75 @@
+{
+    "LayerSwitch": {
+        "title": "Producto:",
+        "btn_too1tip": "Gestionar Capas",
+        "map_too1tip": "Mapa de fondo",
+        "storm_cell": "Celdas de tormenta",
+        "opacity": "Opacidad",
+        "cover": "Cobertura",
+        "pname":{
+            "CR_38": "Máximos 640km",
+            "DR_94": "Reflectividad base",
+            "ET_41": "Topes"
+        },
+        "map":{
+            "orography": "Orografía",
+            "osm": "Político"
+        }
+    },
+    "StormTable": {
+        "label": "Etiquetas",
+        "forecast": "Pronóstico",
+        "past": "Histórico",
+        "id": "ID",
+        "visibility": "V",
+        "check":{
+            "forecast":"P",
+            "past":"H"
+        },
+        "azran":"DIS(km)",
+        "base":"BASE (km)",
+        "top":"TOPE (km)",
+        "vil":"VIL",
+        "maxz":"MAX Z (dbZ)",
+        "centroid":"CENT (km)",
+        "tooltip":{
+            "visibility": "Mostrar Celda",
+            "past": "Mostrar Histórico",
+            "forecast": "Mostrar Pronóstico"
+        },
+        "radar":"Radar",
+        "cells":"Celdas:"
+    },
+    "StormModal": {
+        "radar":"Radar",
+        "cell":"Celda:",
+        "hail": {
+            "poh": "POH",
+            "posh": "POSH"
+        },
+        "height": {
+            "centroid": "CENT",
+            "dbzm": "DBZM",
+            "unit": "km"
+        },
+        "vil": {
+            "vil": "CB VIL",
+            "dbzm": "DBZM",
+            "unit": "dbZ - kg/m^2"
+        }
+    },
+    "Radar": {
+        "radar":"Radar: ",
+        "status":"Estado: ",
+        "min":"min",
+        "last_scan":"Retardo: "
+    },
+    "Animation": {
+        "play":"Comenzar animación",
+        "stop":"Terminar animación",
+        "pause":"Pausar animación",
+        "previous":"Observación anterior",
+        "interval":"Cantidad de observaciones",
+        "next":"Observación siguiente"
+    }
+}
