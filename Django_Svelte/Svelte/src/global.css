@@ -2,13 +2,11 @@ body {
 	font: 14px "Century Gothic", Futura, sans-serif;
 	margin: 0px;
 }
-.layer-switch {
-	right: 20px;
-	top: 60px;
-}
-.animation_control{
+.pannel_control{
 	right: 50%;
-	top: 0px;
+    margin-left: -50;
+    transform: translate(50%, 0);
+	top: 0em;
 }
 #interval{
 	font-size: 1em;
@@ -23,13 +21,15 @@ body {
 div.logo_control   {
 	background-color: transparent;
 	right: 0px;
-	bottom: 15px;
+	top: 0.5em;
 }
-.ol-mouse-position{
+div.ol-mouse-position{
 	color: white;
 	background-color:rgba(0,60,136,0.5);
 	padding: 5px 10px;
 	border-radius: 5px;
+	top:unset;
+	bottom: 15px;
 }
 
 .layer-header{
@@ -44,4 +44,7 @@ div.logo_control   {
 	background-color:white;
 	position: sticky;
 	top: 0;
+}
+.popover {
+	max-width: 300px;
 }

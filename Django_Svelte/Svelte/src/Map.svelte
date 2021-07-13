@@ -3,10 +3,8 @@
     import Map from 'ol/Map';
     import View from 'ol/View';
     import proj4 from 'proj4';
-    import {getCenter} from 'ol/extent';
     import {register} from 'ol/proj/proj4';
     import {MousePosition, defaults} from 'ol/control'
-    import {createStringXY} from 'ol/coordinate';
     import Overlay from 'ol/Overlay';
     import {transform} from 'ol/proj';
 
@@ -16,24 +14,25 @@
     import StormModal from './storm/StormModal.svelte'
     import StormTable from './storm/StormTable.svelte'
     import Trends from './storm/Trends.svelte'
-    import LayerSwitch, {layerController} from './controls/LayerSwitch.svelte'
-    import { getLayers } from './Layers'
+    // import LayerSwitch, {layerController} from './controls/LayerSwitch.svelte'
+    import { createLayers } from './Layers'
     import Legend, {legendController} from './controls/Legend'
     import Logo, {logoController} from './controls/Logo'
-    import Animation, {animationController} from './controls/Animation'
+    import Pannel, {pannelController} from './controls/Pannel'
     import { get } from 'svelte/store'
 
-    import { currentRadar, mapProj, view } from './store'
+    import { currentRadar, mapProj, view, layers } from './store'
     import { radars } from './db/radars';
     import {availableProducts} from './db/products'
     import {storms} from './db/storms'
+    import { init } from './backend';
 
     // Settings
     let zoom = get(view).zoom
     let center = get(view).center
 
     // State variables
-    let layers
+    let initDone = false
     let map_layers
     let StormData = {'show':false, 'storm':null}
     let showStormTable = false
@@ -86,21 +85,19 @@
         let legendControl = legendController();
 
         // Legend object
-        let animationControl = animationController();
+        let pannelControl = pannelController();
 
         // Logo
         let logoControl = logoController();
 
-        // Layer switcher object
-        let LayerSwitchControl = layerController();
 
         // Layers
-        layers = getLayers(stormSettings);
-        map_layers = [layers['orography'],
-                        layers['osm'],
-                        layers['product'],
-                        layers['cover'],
-                        layers['trends']]
+        createLayers(stormSettings);
+        map_layers = [get(layers)['orography'],
+                        get(layers)['osm'],
+                        get(layers)['product'],
+                        get(layers)['cover'],
+                        get(layers)['trends']]
 
         const mapView = new View({
             projection: mapProj,
@@ -114,10 +111,10 @@
 
         const map = new Map({
             controls: defaults().extend([mousePositionControl, 
-                                        LayerSwitchControl, 
+                                        // LayerSwitchControl, 
                                         legendControl,
                                         logoControl,
-                                        animationControl]),
+                                        pannelControl]),
             view: mapView,
             layers: map_layers,
             target: 'map'
@@ -146,13 +143,14 @@
                 element: document.getElementById(`storm-${storm.id}`),
                 positioning: 'center-center'
             });
-            storm_ol.setPosition(transform([storm.Ipos,storm.Jpos], currentRadar.id, mapProj));
+            storm_ol.setPosition(transform([storm.Ipos,storm.Jpos], get(currentRadar).id, mapProj));
             map.addOverlay(storm_ol);
         });
      return map   
     }
 
-    function mapAction() {
+    async function mapAction() {   
+        await init()  
         let map = createMap();
         return {
             destroy: () => {
@@ -164,6 +162,7 @@
     // Do the job once the DOM was generated
     onMount(mapAction);
 </script>
+
 
 <div id="map" class="map"></div>
 <div id="mouse-position"></div>
@@ -191,8 +190,8 @@
     bind:stormSettings={stormSettings}
 />
 
-<LayerSwitch 
-    layers={layers} 
+
+<Pannel 
     bind:stormSettings={stormSettings}
     bind:showStormTable={showStormTable}
     bind:selectedProduct={selectedProduct}
@@ -200,9 +199,9 @@
 
 <Legend selectedProduct={selectedProduct}/>
 <Logo/>
-<Animation/>
 
 <Trends stormSettings={stormSettings}/>
+
 
 <style>
 	.map {

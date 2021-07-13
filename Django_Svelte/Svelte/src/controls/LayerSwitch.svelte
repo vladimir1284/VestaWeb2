@@ -1,7 +1,7 @@
 <script>
   import { FormGroup, Button, Popover, Input, DropdownItem, 
            Tooltip, InputGroup } from 'sveltestrap';
-  import { currentProduct, defaultBaseLayer } from '../store'
+  import { currentProduct, defaultBaseLayer, layers } from '../store'
   import { get } from 'svelte/store'
   import {createProductSource, createCoverSource} from '../Layers'
   import {availableProducts} from '../db/products'
@@ -14,11 +14,12 @@
   let productOpacity = 0.5;
   let showCover = true
   let show_storms = true
+  let isOpen = false
+  let pLabel = ""
   
   export let showStormTable
-  export let layers
   export let stormSettings
-  export let selectedProduct = currentProduct
+  export let selectedProduct = get(currentProduct)
   let baseLayer = get(defaultBaseLayer)
 
   // Modify strom cells visibility
@@ -34,11 +35,19 @@
   
   // update product on radio button switch
   $: {
-    if (layers){      
-      layers.product.setSource(createProductSource(selectedProduct))   
+    const layers_array = get(layers)
+    if (typeof(layers_array.product)!="undefined"){      
+      // Update Label
+      try {        
+      pLabel = $_('LayerSwitch.pname')[selectedProduct.id]
+      } catch (error) {
+        
+      }
+      currentProduct.set(selectedProduct)
+      layers_array.product.setSource(createProductSource())   
       if (selectedProduct.range != range){
         // Update cover when needed
-        layers.cover.setSource(createCoverSource(selectedProduct))
+        layers_array.cover.setSource(createCoverSource(selectedProduct))
         range = selectedProduct.range
       }
     }
@@ -46,18 +55,20 @@
 
   // Modify cover layer visibility
   $: {
-    if (layers){
-      layers.cover.setVisible(showCover);
+    const layers_array = get(layers)
+    if (typeof(layers_array.cover)!="undefined"){
+      layers_array.cover.setVisible(showCover);
       // console.log(`Cover: ${showCover}`)
     }
   }
 
   // Control base layer
   $: {
-    if (layers){
-      layers.orography.setVisible(false)
-      layers.osm.setVisible(false)
-      layers[baseLayer].setVisible(true)
+    const layers_array = get(layers)
+    if (typeof(layers_array.orography)!="undefined"){
+      layers_array.orography.setVisible(false)
+      layers_array.osm.setVisible(false)
+      layers_array[baseLayer].setVisible(true)
       defaultBaseLayer.set(baseLayer) // Persist
     }
   }
@@ -65,33 +76,25 @@
 
   // Control Porduct layer opacity
   $: {
-    if (layers){
-      layers.product.setOpacity(productOpacity);
+    const layers_array = get(layers)
+    if (typeof(layers_array.product)!="undefined"){
+      layers_array.product.setOpacity(productOpacity);
     }
   }
 
-  const toggle = () => (showStormTable = true);
-</script>
-
-
-<script context="module">
-  import {Control} from 'ol/control'
-
-  export function layerController(){
-    let button = document.getElementById('layer_switch_btn');
-
-    let element = document.createElement('div');
-    element.className = 'layer-switch ol-unselectable ol-control';
-    element.appendChild(button);
-
-    return new Control({element: element});
+  function toggle(){
+    showStormTable = true
+    isOpen = false
   }
 </script>
 
 
-<Button id="layer_switch_btn" ><LayersOutline color="white" size="1.2em"/></Button>
+<Button id="layer_switch_btn" style="width: auto; padding-right: .2em;">
+  <LayersOutline color="white" size="1.2em"/>
+  {pLabel}
+  </Button>
 
-<Popover placement="bottom" target="layer_switch_btn">
+<Popover placement="bottom" target="layer_switch_btn" bind:isOpen>
   <div slot="title">
     {$_('LayerSwitch.title')}
   </div>
@@ -136,7 +139,7 @@
 </Popover>
 
 <Tooltip
-  placement="left"
+  placement="bottom"
   target="layer_switch_btn">
   {$_('LayerSwitch.btn_too1tip')}
 </Tooltip>

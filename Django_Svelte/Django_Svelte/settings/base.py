@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     # This project
     'website',
     'vestaweb',
+    'corsheaders', # Just for develoment
 
     # CodeRed CMS
     'coderedcms',
@@ -79,6 +80,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware', # Just for development
 
     #  Error reporting. Uncomment this to receive emails when a 404 is triggered.
     # 'django.middleware.common.BrokenLinkEmailsMiddleware',
@@ -217,3 +219,9 @@ BOOTSTRAP4 = {
 # Tags
 
 TAGGIT_CASE_INSENSITIVE = True
+
+# Just for development
+ALLOWED_HOSTS=['*']
+CORS_ORIGIN_ALLOW_ALL = True
+
+

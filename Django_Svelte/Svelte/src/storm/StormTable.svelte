@@ -4,6 +4,7 @@
   import { current_datetime, currentRadar  } from '../store';
   import {storms} from '../db/storms'
   import { _ } from '../services/i18n';
+  import {get} from "svelte/store"
 
   export let showStormTable
   export let show_label
@@ -65,8 +66,8 @@
 
 <Modal isOpen={showStormTable} {toggle} backdrop={false} size = 'lg'>
   <ModalHeader {toggle}>
-    {$_('StormTable.radar')}: <b>{currentRadar.id}</b> {$_('StormTable.cells')} <b>{storms.length}</b>
-    <span class='date'>&emsp {current_datetime.setZone('local').toFormat('dd/MMM/y HH:mma')}</span> 
+    {$_('StormTable.radar')}: <b>{$currentRadar.id}</b> {$_('StormTable.cells')} <b>{storms.length}</b>
+    <span class='date'>&emsp {$current_datetime.setZone('local').toFormat('dd/MMM/y HH:mma')}</span> 
   </ModalHeader>
   <ModalBody>
     <InputGroup>

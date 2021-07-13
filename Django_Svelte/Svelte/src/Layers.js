@@ -8,9 +8,10 @@ import Circle from 'ol/geom/Circle';
 import {fromCircle, fromExtent} from 'ol/geom/Polygon';
 import Polygon from 'ol/geom/Polygon';
 import {transform} from 'ol/proj';
+import {get} from 'svelte/store'
 
 import {createTrendsSource} from './storm/Trends.svelte'
-import { mapExtend, base_url, currentRadar, currentProduct, current_datetime, mapProj} from './store'
+import { mapExtend, base_url, currentRadar, currentProduct, current_datetime, mapProj, layers} from './store'
 
 
 const fill = new Fill({
@@ -22,7 +23,7 @@ export function createCoverSource(currentProduct){
     const coverSource = new VectorSource({wrapX: false});
 
     const circleCoords = fromCircle(new Circle(
-                transform([0,0],currentRadar.id,mapProj), currentProduct.range)).getCoordinates();
+                transform([0,0],get(currentRadar).id,mapProj), currentProduct.range)).getCoordinates();
     const coords = [polygonCords[0], circleCoords[0]];
     const inversePolygon = new Feature(new Polygon(coords));
     inversePolygon.setStyle(new Style({fill: fill}));
@@ -31,17 +32,18 @@ export function createCoverSource(currentProduct){
     return coverSource;
 }
 
-export function createProductSource(product){
+export function createProductSource(){
+    const product = get(currentProduct)
     return new Static({
-        url: base_url + currentRadar.id + '/' + product.id + '_' + current_datetime.toFormat('yyyy-MM-dd_hh-mm-ss') + '.png',
-        projection: currentRadar.id,
+        url: base_url + get(currentRadar).id + '/' + product.id + '_' + get(current_datetime).toUTC().toFormat('yyyy-MM-dd_hh-mm-ss') + '.png',
+        projection: get(currentRadar).id,
         imageSmoothing: false,
         imageExtent: [-product.range, -product.range, 
                         product.range, product.range],
     });
 }
 
-export function getLayers(stormSettings){  
+export function createLayers(stormSettings){  
     //A Raster base layer	
     const orographyLayer = new ImageLayer({
         source:new Static({
@@ -70,9 +72,9 @@ export function getLayers(stormSettings){
     let trendsLayer = new VectorLayer({source: createTrendsSource(stormSettings)});
     
     // ------------------------------------
-    return ({'orography': orographyLayer,
-            'osm':osmLayer,
-            'product': productLayer,
-            'cover': coverLayer,
-            'trends': trendsLayer});
+    layers.set({'orography': orographyLayer,
+                'osm':osmLayer,
+                'product': productLayer,
+                'cover': coverLayer,
+                'trends': trendsLayer})
 }

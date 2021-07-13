@@ -70,6 +70,8 @@
         "pause":"Pausar animación",
         "previous":"Observación anterior",
         "interval":"Cantidad de observaciones",
-        "next":"Observación siguiente"
+        "next":"Observación siguiente",
+        "radar":"Cambiar de radar",
+        "datetime":"Cambiar la fecha"
     }
 }

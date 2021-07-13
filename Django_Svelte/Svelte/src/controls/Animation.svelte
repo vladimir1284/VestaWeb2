@@ -1,18 +1,3 @@
-<script context="module">
-    import { Control } from "ol/control";
-
-    export function animationController() {
-        const container = document.getElementById("animation");
-
-        let element = document.createElement("div");
-        element.id = "animation_ctrl  ";
-        element.className = "ol-unselectable ol-control animation_control";
-        element.appendChild(container);
-
-        return new Control({ element: element });
-    }
-</script>
-
 <script>
     import {
         Button,
@@ -26,6 +11,7 @@
     import PauseCircleOutline from "svelte-material-icons/PauseCircleOutline.svelte";
     import StopCircleOutline from "svelte-material-icons/StopCircleOutline.svelte";
     import { _ } from "../services/i18n";
+    import { get } from "svelte/store";
 
     let playing = false;
 
@@ -42,6 +28,7 @@
 </script>
 
 <div id="animation">
+
     <div>
         <Button id="previous_btn"
             ><SkipPreviousCircleOutline color="white" size="1.5em" />
@@ -74,6 +61,7 @@
             <SkipNextCircleOutline color="white" size="1.5em" />
         </Button>
     </div>
+
 </div>
 
 <Tooltip placement="bottom" target="previous_btn">

@@ -203,12 +203,14 @@
 	}
 	
 	function onMouseMove(e) {
-		if (moving) {
-			left += e.movementX;
-			bottom -= e.movementY;
-		}
-        element.style.left = left
-        element.style.bottom = bottom
+        if(element){
+            if (moving) {
+                left += e.movementX;
+                bottom -= e.movementY;
+            }
+            element.style.left = left
+            element.style.bottom = bottom
+        }
 	}
 	
 	function onMouseUp() {

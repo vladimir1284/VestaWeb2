@@ -1,32 +1,38 @@
-import { writable } from 'svelte-local-storage-store'
+ import { writable as writable_local } from 'svelte-local-storage-store'
 import { availableProducts } from './db/products.js';
-import { radars } from './db/radars.js';
-import {getCenter} from 'ol/extent';
+import { radars as default_radars } from './db/radars.js';
+import { getCenter } from 'ol/extent';
+import { writable } from 'svelte/store';
 
 var { DateTime } = require('luxon');
 
 export const base_url = 'imgs/'
 
-export const current_datetime = DateTime.utc(1993, 3, 13, 10, 33)
+export const baseAPI = "http://localhost:8000/vestaweb/"
+
+export const current_datetime = writable(DateTime.utc())
 
 
-export const currentRadar = radars[0]
+export const radars = writable({})
 
+export const currentRadar = writable({})
 
-export const currentProduct = availableProducts[0]
+export const layers = writable({})
+
+export const currentProduct = writable(availableProducts[0])
 
 export const defaultProductOpacity = 0.5
 
 export const mapProj = 'EPSG:2085'
 
-export const mapExtend = [-302183.53173887, -409851.12978591, 
-                            1497816.46826113, 790148.87021409]
+export const mapExtend = [-302183.53173887, -409851.12978591,
+    1497816.46826113, 790148.87021409]
 
-export const defaultBaseLayer = writable('baseLayer', 'osm');
+export const defaultBaseLayer = writable_local('baseLayer', 'osm');
 
 const defaultCenter = getCenter(mapExtend)
-export const view = writable('view', {
-                                        zoom: 7,
-                                        center: defaultCenter
-                                    })
+export const view = writable_local('view', {
+    zoom: 7,
+    center: defaultCenter
+})
 
