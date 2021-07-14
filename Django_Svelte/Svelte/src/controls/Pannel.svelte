@@ -22,7 +22,6 @@
 
     export let showStormTable
     export let stormSettings
-    export let selectedProduct
 
 
     // Frames configuration
@@ -54,7 +53,6 @@
         <LayerSwitch 
             bind:stormSettings={stormSettings}
             bind:showStormTable={showStormTable}
-            bind:selectedProduct={selectedProduct}
         />
     </div>
 

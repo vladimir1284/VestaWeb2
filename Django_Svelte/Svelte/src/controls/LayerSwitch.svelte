@@ -1,10 +1,9 @@
 <script>
   import { FormGroup, Button, Popover, Input, DropdownItem, 
            Tooltip, InputGroup } from 'sveltestrap';
-  import { currentProduct, defaultBaseLayer, layers } from '../store'
+  import { currentProduct, defaultBaseLayer, layers, availableProducts } from '../store'
   import { get } from 'svelte/store'
   import {createProductSource, createCoverSource} from '../Layers'
-  import {availableProducts} from '../db/products'
   import Settings from 'svelte-material-icons/Settings.svelte'
   import LayersOutline from 'svelte-material-icons/LayersOutline.svelte'
   import { _ } from '../services/i18n';
@@ -19,8 +18,13 @@
   
   export let showStormTable
   export let stormSettings
-  export let selectedProduct = get(currentProduct)
+  let selectedProduct
   let baseLayer = get(defaultBaseLayer)
+
+  function updateSelectedProduct(x){
+    selectedProduct = x
+  }
+  $: updateSelectedProduct($currentProduct)
 
   // Modify strom cells visibility
   $:{
@@ -35,7 +39,7 @@
   
   // update product on radio button switch
   $: {
-    const layers_array = get(layers)
+    const layers_array = $layers
     if (typeof(layers_array.product)!="undefined"){      
       // Update Label
       try {        
@@ -99,7 +103,7 @@
     {$_('LayerSwitch.title')}
   </div>
   <FormGroup>
-    {#each availableProducts as product}
+    {#each $availableProducts as product}
       <Input id={product.id} type="radio" bind:group={selectedProduct} value={product} label={$_('LayerSwitch.pname')[product.id]}/>
     {/each}
     <Input

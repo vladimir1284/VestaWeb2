@@ -1,5 +1,6 @@
 <script>    
-    export let selectedProduct
+    import { currentProduct } from "../store"
+    
 
     let unit = ""
 
@@ -183,9 +184,10 @@
     }
 
     $:{
-        if(selectedProduct){
-            generateLegend(selectedProduct.palette)
+        try {
+            generateLegend($currentProduct.palette)
         }
+        catch{}
     }
 
 </script>

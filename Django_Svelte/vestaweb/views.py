@@ -6,23 +6,18 @@ from django.core.exceptions import ObjectDoesNotExist
 import pytz
 
 # Retrieve the latest raster product
-def last_raster(request, radar, pcode):
+def last_raster(request, radar):
     radar = Radar.objects.get(radar_code = radar)
-    description = ProductDescription.objects.get(pcode=pcode)
-    product = RasterProduct.objects.filter(radar=radar, description=description).order_by('-created')[0]
-    last_product = {'datetime': product.created,
-                    'palette': product.description.palette.name,
-                    'id': pcode,
-                    'range':  product.description.range}
-    return JsonResponse({'product':last_product,
-                        'radar': radar.radar_code,
-                         'pcode': pcode})
+    product = RasterProduct.objects.filter(radar=radar).order_by('-created')[0]
+    last_product = {'datetime': product.created}
+    return JsonResponse(last_product)
 
 # Retrieve the latest raster product
 def raster_array(request, radar, pcode, dt, n):
     radar = Radar.objects.get(radar_code = radar)
     description = ProductDescription.objects.get(pcode=pcode)
-    product_array = RasterProduct.objects.filter(radar=radar, description=description).order_by('-created')[:n]
+    product_array = RasterProduct.objects.filter(radar=radar, 
+                    description=description).filter(created__lte=dt).order_by('-created')[:n]
     product_array = [{'datetime': product.created} for product in product_array]
     
     return JsonResponse({'product_array':product_array,
@@ -195,5 +190,24 @@ def get_radars(request):
                     'last': last_obs})
             
     return JsonResponse({'radars': radar_list})
+    
+# Retrieve product description
+def getProductDescription(request, pcode):
+    description = ProductDescription.objects.get(pcode=pcode)
+    description = {
+                    'id': description.pcode,
+                    'range':description.range,
+                    'palette': {'colors': description.palette.colors,
+                                'min': description.palette.min_value,
+                                'max': description.palette.max_value,
+                                'unit': description.palette.unit,
+                                'tickValues': description.palette.tickValues}
+                    }
+    return JsonResponse({'description': description})
+    
+    
+    
+    
+    
     
     

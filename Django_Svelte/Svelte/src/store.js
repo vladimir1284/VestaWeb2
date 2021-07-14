@@ -1,6 +1,4 @@
  import { writable as writable_local } from 'svelte-local-storage-store'
-import { availableProducts } from './db/products.js';
-import { radars as default_radars } from './db/radars.js';
 import { getCenter } from 'ol/extent';
 import { writable } from 'svelte/store';
 
@@ -19,7 +17,9 @@ export const currentRadar = writable({})
 
 export const layers = writable({})
 
-export const currentProduct = writable(availableProducts[0])
+export const currentProduct = writable({})
+
+export const availableProducts = writable([])
 
 export const defaultProductOpacity = 0.5
 

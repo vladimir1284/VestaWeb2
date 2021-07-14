@@ -4,9 +4,12 @@ from . import views
 
 urlpatterns = [
     path(r'', TemplateView.as_view(template_name="index.html")),
-    path('<radar>/<pcode>/last',
+    path('<radar>/last',
             views.last_raster,
             name='last_raster'),
+    path('description/<pcode>',
+            views.getProductDescription,
+            name='product_description'),
     path('<radar>/<pcode>/<dt>/<int:n>',
             views.raster_array,
             name='raster_array'),

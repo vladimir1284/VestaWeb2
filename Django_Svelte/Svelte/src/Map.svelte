@@ -23,7 +23,6 @@
 
     import { currentRadar, mapProj, view, layers } from './store'
     import { radars } from './db/radars';
-    import {availableProducts} from './db/products'
     import {storms} from './db/storms'
     import { init } from './backend';
 
@@ -38,7 +37,6 @@
     let showStormTable = false
     let show_label = false
     let stormSettings = {}
-    let selectedProduct = availableProducts[0];
 
     // Initialize storm settings
     storms.forEach(function (storm, index){
@@ -194,10 +192,9 @@
 <Pannel 
     bind:stormSettings={stormSettings}
     bind:showStormTable={showStormTable}
-    bind:selectedProduct={selectedProduct}
 />
 
-<Legend selectedProduct={selectedProduct}/>
+<Legend/>
 <Logo/>
 
 <Trends stormSettings={stormSettings}/>
