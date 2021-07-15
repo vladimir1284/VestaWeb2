@@ -70,8 +70,17 @@
         "pause":"Pausar animación",
         "previous":"Observación anterior",
         "interval":"Cantidad de observaciones",
-        "next":"Observación siguiente",
-        "radar":"Cambiar de radar",
+        "not_enough": "No hay productos suficientes para la animación!",
+        "no_product":{
+            "next": "No hay un producto posterior a ",
+            "previous": "No hay un producto anterior a "
+        },
+        "next":"Observación siguiente"
+    },
+    "DatePicker":{
         "datetime":"Cambiar la fecha"
+    },
+    "RadarSwitch": {
+        "radar":"Cambiar de radar"
     }
 }

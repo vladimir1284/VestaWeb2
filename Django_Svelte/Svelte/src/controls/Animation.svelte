@@ -56,7 +56,7 @@
             play_interval = setInterval(animate, delay)
             playing = true
         } else {
-            alert("No hay productos suficientes para la animación!")
+            alert($_("Animation.not_enough"))
         }
     }
 
@@ -113,8 +113,7 @@
             current_datetime.set(DateTime.fromISO(product.datetime))
             get(layers).product.setSource(createProductSource())
         } else {
-            const np = (fcode == "next")?'posterior':'anterior'
-            alert("No hay un producto " + np + " a " + 
+            alert($_("Animation.no_product")[fcode] +
                     get(current_datetime).setZone('local').toFormat('dd/MMM/y HH:mma'))
         }
     }

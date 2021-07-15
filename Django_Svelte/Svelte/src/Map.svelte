@@ -10,20 +10,18 @@
 
     import { onMount } from 'svelte';
     import RadarOL from './RadarOL.svelte';
-    import StormOL from './storm/StormOL.svelte';
+    import StormOL, {createStromsOverlay} from './storm/StormOL.svelte';
     import StormModal from './storm/StormModal.svelte'
     import StormTable from './storm/StormTable.svelte'
     import Trends from './storm/Trends.svelte'
-    // import LayerSwitch, {layerController} from './controls/LayerSwitch.svelte'
     import { createLayers } from './Layers'
     import Legend, {legendController} from './controls/Legend'
     import Logo, {logoController} from './controls/Logo'
     import Pannel, {pannelController} from './controls/Pannel'
     import { get } from 'svelte/store'
 
-    import { currentRadar, mapProj, view, layers } from './store'
+    import { mapProj, view, layers, map, storms } from './store'
     import { radars } from './db/radars';
-    import {storms} from './db/storms'
     import { init } from './backend';
 
     // Settings
@@ -31,23 +29,10 @@
     let center = get(view).center
 
     // State variables
-    let initDone = false
     let map_layers
     let StormData = {'show':false, 'storm':null}
     let showStormTable = false
     let show_label = false
-    let stormSettings = {}
-
-    // Initialize storm settings
-    storms.forEach(function (storm, index){
-        stormSettings[storm.id] = {
-            'future': true,
-            'past': true,
-            'visible': true
-        }
-    })
-    // reaisign for recognizing state change
-    stormSettings = stormSettings 
 
     // Create projections
     // TODO select a non deprecated EPSG proyection for the map
@@ -90,7 +75,7 @@
 
 
         // Layers
-        createLayers(stormSettings);
+        createLayers();
         map_layers = [get(layers)['orography'],
                         get(layers)['osm'],
                         get(layers)['product'],
@@ -134,27 +119,15 @@
             map.addOverlay(radar_ol);
         });        
         
-        // Overlay de las tormentas
-        storms.forEach(function (storm, index){
-            const storm_ol = new Overlay({
-                'id':storm.id,
-                element: document.getElementById(`storm-${storm.id}`),
-                positioning: 'center-center'
-            });
-            storm_ol.setPosition(transform([storm.Ipos,storm.Jpos], get(currentRadar).id, mapProj));
-            map.addOverlay(storm_ol);
-        });
+        
      return map   
     }
 
     async function mapAction() {   
         await init()  
-        let map = createMap();
-        return {
-            destroy: () => {
-                map.remove();
-            },
-        };
+        map.set(createMap())
+        // Overlay de las tormentas
+        createStromsOverlay()
     }
 
     // Do the job once the DOM was generated
@@ -167,8 +140,6 @@
 
 <!-- Mostrar las celdas de tormenta -->
 <StormOL 
-    storm_list={storms} 
-    stormSettings={stormSettings} 
     bind:StormData={StormData}
     show_label={show_label}
 />
@@ -185,19 +156,17 @@
 <StormTable 
     bind:showStormTable={showStormTable}
     bind:show_label={show_label}
-    bind:stormSettings={stormSettings}
 />
 
 
 <Pannel 
-    bind:stormSettings={stormSettings}
     bind:showStormTable={showStormTable}
 />
 
 <Legend/>
 <Logo/>
 
-<Trends stormSettings={stormSettings}/>
+<Trends/>
 
 
 <style>

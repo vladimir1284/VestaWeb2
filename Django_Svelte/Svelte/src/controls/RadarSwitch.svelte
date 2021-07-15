@@ -47,5 +47,5 @@
 {/if}
 
 <Tooltip placement="bottom" target="radar">
-    {$_("Animation.radar")}
+    {$_("RadarSwitch.radar")}
 </Tooltip>

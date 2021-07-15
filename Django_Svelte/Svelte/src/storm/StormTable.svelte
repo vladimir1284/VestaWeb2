@@ -1,14 +1,13 @@
 <script>
   import {Modal, ModalBody, ModalHeader,
           Table, Input, InputGroup, Tooltip} from 'sveltestrap';
-  import { current_datetime, currentRadar  } from '../store';
+  import { current_datetime, currentRadar, stormSettings } from '../store';
   import {storms} from '../db/storms'
   import { _ } from '../services/i18n';
   import {get} from "svelte/store"
 
   export let showStormTable
   export let show_label
-  export let stormSettings
 
   let past = false
   let future = false
@@ -21,20 +20,26 @@
     updateFuture(future)
   }
   function updateFuture(future){
-    for (const [key, value] of Object.entries(stormSettings)) {
-      stormSettings[key].future = future
+    const settings = get(stormSettings)
+    if (typeof(settings) != "undefined"){
+      for (const [key, value] of Object.entries(settings)) {
+        settings[key].future = future
+      }
+      stormSettings.set(settings)
     }
   }
 
   function updatePast(past){
-    for (const [key, value] of Object.entries(stormSettings)) {
-      stormSettings[key].past = past
+    const settings = get(stormSettings)
+    if (typeof(settings) != "undefined"){
+      for (const [key, value] of Object.entries(settings)) {
+        settings[key].past = past
+      }
+      stormSettings.set(settings)
     }
   }
 
   function toggle(){
-    // reaisign for recognizing state change
-    stormSettings = stormSettings
     // Close modal
     showStormTable = false
   } 
@@ -99,15 +104,15 @@
             <th scope="row">{storm.id}</th>
             <th>
               <Input id={"visible_"+storm.id} type="checkbox"
-                  bind:checked={stormSettings[storm.id].visible} label=""/> 
+                  bind:checked={$stormSettings[storm.id].visible} label=""/> 
             </th>
             <th>
               <Input id={"future_"+storm.id} type="checkbox" 
-                  bind:checked={stormSettings[storm.id].future} label=""/> 
+                  bind:checked={$stormSettings[storm.id].future} label=""/> 
             </th>
             <th>
               <Input id={"past_"+storm.id} type="checkbox" 
-                  bind:checked={stormSettings[storm.id].past} label=""/> 
+                  bind:checked={$stormSettings[storm.id].past} label=""/> 
             </th>
             <td class="text-center">{("0"+storm.azimut).slice(-3)} / {nm2kmSTR(storm.range)}</td>
             <td class="text-center">{kft2kmSTR_b(storm.bases.slice(-1))}</td>

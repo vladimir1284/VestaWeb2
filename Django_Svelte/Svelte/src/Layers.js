@@ -43,7 +43,7 @@ export function createProductSource(){
     });
 }
 
-export function createLayers(stormSettings){  
+export function createLayers(){  
     //A Raster base layer	
     const orographyLayer = new ImageLayer({
         source:new Static({
@@ -69,7 +69,7 @@ export function createLayers(stormSettings){
     let coverLayer = new VectorLayer({source: createCoverSource(currentProduct)});
 
     // ------------ Trends -----------------
-    let trendsLayer = new VectorLayer({source: createTrendsSource(stormSettings)});
+    let trendsLayer = new VectorLayer({source: createTrendsSource()});
     
     // ------------------------------------
     layers.set({'orography': orographyLayer,

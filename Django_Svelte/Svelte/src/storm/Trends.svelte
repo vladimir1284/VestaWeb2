@@ -6,8 +6,7 @@
   import MultiLineString from "ol/geom/MultiLineString";
   import { transform } from "ol/proj";
 
-  import { currentRadar, mapProj } from "../store";
-  import { storms } from "../db/storms";
+  import { currentRadar, mapProj, stormSettings, storms } from "../store";
   import {get} from 'svelte/store'
 
   let features = {};
@@ -73,8 +72,9 @@
   }
 
   // Generate trend features
-  function insertFeatures(stormSettings, source, is_past) {
-    storms.forEach(function (storm, index) {
+  function insertFeatures(source, is_past) {
+    const settings = get(stormSettings)
+    get(storms).forEach(function (storm, index) {
       // Create past features
       const ipos_array = is_past ? storm.past_Ipos : storm.forecast_Ipos;
       const jpos_array = is_past ? storm.past_Jpos : storm.forecast_Jpos;
@@ -89,9 +89,9 @@
 
       // Should they be shown
       const visible = is_past
-        ? stormSettings[storm.id].past
-        : stormSettings[storm.id].forecast;
-      const show_trend = visible && stormSettings[storm.id].visible;
+        ? settings[storm.id].past
+        : settings[storm.id].forecast;
+      const show_trend = visible && settings[storm.id].visible;
       const style = is_past ? style_past : iconStyle;
 
       pfeat.setStyle(show_trend ? style : style_hidden);
@@ -135,23 +135,21 @@
     });
   }
 
-  export function createTrendsSource(stormSettings) {
+  export function createTrendsSource() {
     const trendsSource = new VectorSource({ wrapX: false });
 
-    insertFeatures(stormSettings, trendsSource, true);
-    insertFeatures(stormSettings, trendsSource, false);
+    insertFeatures(trendsSource, true);
+    insertFeatures(trendsSource, false);
 
     return trendsSource;
   }
 </script>
 
 <script>
-  export let stormSettings;
-
   function updateTrendVisibility(settings) {
     try {
       if (Object.keys(features).length != 0) {
-        storms.forEach(function (storm, index) {
+        get(storms).forEach(function (storm, index) {
           const show_past =
             settings[storm.id].past && settings[storm.id].visible;
           features[storm.id].past[0].setStyle(
@@ -179,5 +177,5 @@
     }
   }
 
-  $: updateTrendVisibility(stormSettings);
+  $: updateTrendVisibility($stormSettings);
 </script>

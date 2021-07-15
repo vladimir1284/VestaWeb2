@@ -66,5 +66,5 @@ style="width: auto; padding-left: .2em; padding-right: .2em;">
 </Popover>
 
 <Tooltip placement="bottom" target="datetime">
-    {$_("Animation.datetime")}
+    {$_("DatePicker.datetime")}
 </Tooltip>

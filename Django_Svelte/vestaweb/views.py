@@ -156,7 +156,7 @@ def get_storm_cells(request, radar, dt):
         except KeyError:
             pass
         
-    return JsonResponse({'storm_cells': storm_cells,
+    return JsonResponse({'storm_cells': list(storm_cells.values()),
                          'radar': radar.radar_code,
                          'datetime': dt,
                          'n_sti': n_sti,

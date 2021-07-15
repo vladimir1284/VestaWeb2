@@ -21,7 +21,6 @@
     import RadarSwitch from "./RadarSwitch.svelte";
 
     export let showStormTable
-    export let stormSettings
 
 
     // Frames configuration
@@ -51,7 +50,6 @@
 
     <div>
         <LayerSwitch 
-            bind:stormSettings={stormSettings}
             bind:showStormTable={showStormTable}
         />
     </div>

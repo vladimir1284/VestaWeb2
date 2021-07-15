@@ -1,7 +1,7 @@
 <script>
   import { FormGroup, Button, Popover, Input, DropdownItem, 
            Tooltip, InputGroup } from 'sveltestrap';
-  import { currentProduct, defaultBaseLayer, layers, availableProducts } from '../store'
+  import { currentProduct, defaultBaseLayer, layers, availableProducts, stormSettings } from '../store'
   import { get } from 'svelte/store'
   import {createProductSource, createCoverSource} from '../Layers'
   import Settings from 'svelte-material-icons/Settings.svelte'
@@ -17,7 +17,6 @@
   let pLabel = ""
   
   export let showStormTable
-  export let stormSettings
   let selectedProduct
   let baseLayer = get(defaultBaseLayer)
 
@@ -31,10 +30,13 @@
     updateStormSettings(show_storms)
   }
   function updateStormSettings(visible) {
-    for (const [key, value] of Object.entries(stormSettings)) {
-      stormSettings[key].visible = visible
+    const settings = get(stormSettings)
+    if (typeof(settings) != "undefined"){
+      for (const [key, value] of Object.entries(settings)) {
+        settings[key].visible = visible
+      }
+      stormSettings.set(settings)
     }
-    stormSettings  = stormSettings
   }
   
   // update product on radio button switch
