@@ -1,10 +1,9 @@
 <script>
   import {Modal, ModalBody, ModalHeader,
           Table, Input, InputGroup, Tooltip} from 'sveltestrap';
-  import { current_datetime, currentRadar, stormSettings } from '../store';
-  import {storms} from '../db/storms'
+  import { current_datetime, currentRadar, storms } from '../store';
+  import {updateStormSettings} from "./storms"
   import { _ } from '../services/i18n';
-  import {get} from "svelte/store"
 
   export let showStormTable
   export let show_label
@@ -14,29 +13,10 @@
 
   // Update globally past and future
   $:{
-    updatePast(past)
+    updateStormSettings('past', past)
   }
   $:{
-    updateFuture(future)
-  }
-  function updateFuture(future){
-    const settings = get(stormSettings)
-    if (typeof(settings) != "undefined"){
-      for (const [key, value] of Object.entries(settings)) {
-        settings[key].future = future
-      }
-      stormSettings.set(settings)
-    }
-  }
-
-  function updatePast(past){
-    const settings = get(stormSettings)
-    if (typeof(settings) != "undefined"){
-      for (const [key, value] of Object.entries(settings)) {
-        settings[key].past = past
-      }
-      stormSettings.set(settings)
-    }
+    updateStormSettings('future', future)
   }
 
   function toggle(){
@@ -71,7 +51,7 @@
 
 <Modal isOpen={showStormTable} {toggle} backdrop={false} size = 'lg'>
   <ModalHeader {toggle}>
-    {$_('StormTable.radar')}: <b>{$currentRadar.id}</b> {$_('StormTable.cells')} <b>{storms.length}</b>
+    {$_('StormTable.radar')}: <b>{$currentRadar.id}</b> {$_('StormTable.cells')} <b>{$storms.length}</b>
     <span class='date'>&emsp {$current_datetime.setZone('local').toFormat('dd/MMM/y HH:mma')}</span> 
   </ModalHeader>
   <ModalBody>
@@ -99,20 +79,20 @@
         </tr>
       </thead>
       <tbody>
-        {#each storms as storm}
+        {#each $storms as storm}
           <tr>
             <th scope="row">{storm.id}</th>
             <th>
               <Input id={"visible_"+storm.id} type="checkbox"
-                  bind:checked={$stormSettings[storm.id].visible} label=""/> 
+                  bind:checked={storm.settings.visible} label=""/> 
             </th>
             <th>
               <Input id={"future_"+storm.id} type="checkbox" 
-                  bind:checked={$stormSettings[storm.id].future} label=""/> 
+                  bind:checked={storm.settings.future} label=""/> 
             </th>
             <th>
               <Input id={"past_"+storm.id} type="checkbox" 
-                  bind:checked={$stormSettings[storm.id].past} label=""/> 
+                  bind:checked={storm.settings.past} label=""/> 
             </th>
             <td class="text-center">{("0"+storm.azimut).slice(-3)} / {nm2kmSTR(storm.range)}</td>
             <td class="text-center">{kft2kmSTR_b(storm.bases.slice(-1))}</td>

@@ -6,8 +6,11 @@
   import MultiLineString from "ol/geom/MultiLineString";
   import { transform } from "ol/proj";
 
-  import { currentRadar, mapProj, stormSettings, storms } from "../store";
+  import { currentRadar, current_datetime, layers, mapProj, storms } from "../store";
   import {get} from 'svelte/store'
+
+
+  let created_deatetime = 0
 
   let features = {};
   const fill_past = new Fill({
@@ -73,7 +76,6 @@
 
   // Generate trend features
   function insertFeatures(source, is_past) {
-    const settings = get(stormSettings)
     get(storms).forEach(function (storm, index) {
       // Create past features
       const ipos_array = is_past ? storm.past_Ipos : storm.forecast_Ipos;
@@ -89,9 +91,9 @@
 
       // Should they be shown
       const visible = is_past
-        ? settings[storm.id].past
-        : settings[storm.id].forecast;
-      const show_trend = visible && settings[storm.id].visible;
+        ? storm.settings.past
+        : storm.settings.forecast;
+      const show_trend = visible && storm.settings.visible;
       const style = is_past ? style_past : iconStyle;
 
       pfeat.setStyle(show_trend ? style : style_hidden);
@@ -141,17 +143,25 @@
     insertFeatures(trendsSource, true);
     insertFeatures(trendsSource, false);
 
+    created_deatetime = get(current_datetime)
+
     return trendsSource;
   }
 </script>
 
 <script>
-  function updateTrendVisibility(settings) {
+  function updateTrendVisibility(storms) {
+    if (created_deatetime != get(current_datetime) &&
+        created_deatetime != 0){
+      // Trends source needs to be recreated
+        get(layers).trends.setSource(createTrendsSource())
+    }
+
     try {
       if (Object.keys(features).length != 0) {
-        get(storms).forEach(function (storm, index) {
+        storms.forEach(function (storm, index) {
           const show_past =
-            settings[storm.id].past && settings[storm.id].visible;
+            storm.settings.past && storm.settings.visible;
           features[storm.id].past[0].setStyle(
             show_past ? style_past : style_hidden
           );
@@ -161,7 +171,7 @@
             );
           }
           const show_forecast =
-            settings[storm.id].future && settings[storm.id].visible;
+            storm.settings.future && storm.settings.visible;
           features[storm.id].forecast[0].setStyle(
             show_forecast ? iconStyle : style_hidden
           );
@@ -173,9 +183,9 @@
         });
       }
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   }
 
-  $: updateTrendVisibility($stormSettings);
+  $: updateTrendVisibility($storms);
 </script>

@@ -1,5 +1,5 @@
 import {current_datetime, radars, currentRadar, currentProduct, 
-        baseAPI, availableProducts, storms, stormSettings} from './store'
+        baseAPI, availableProducts, storms} from './store'
 import {get} from 'svelte/store'
 
 var { DateTime } = require('luxon');
@@ -59,20 +59,18 @@ async function getLastProduct(){
     return current_datetime.set(DateTime.fromISO(items.datetime))
 }
 
-async function getStorms(){
+export async function getStorms(){
     const apiURL = baseAPI + get(currentRadar).id +  '/storm_cells/'+ 
                     get(current_datetime).setZone('UTC').toFormat("y-MM-dd'T'HH:mm:ss'Z'")
     const res = await fetch(apiURL)
     if (!res.ok) throw new Error('Bad response from: ' + apiURL)
     const items = await res.json()
     const storm_list = items.storm_cells
-    const settings = {}
     storm_list.forEach(storm => {
         // Initialize storm settings
-        settings[storm.id] = {'future': false,
+        storm.settings = {'future': false,
                             'past': false,
                             'visible': true}        
     });
-    stormSettings.set(settings)
     return storms.set(storm_list)
 }

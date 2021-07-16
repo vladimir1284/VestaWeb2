@@ -14,6 +14,8 @@
     import { get } from "svelte/store";
     import { current_datetime, baseAPI, currentRadar, currentProduct, layers } from "../store"
     import {createProductSource} from "../Layers"
+    import {updateStormSettings} from "../storm/storms"
+    import {getStorms} from "../backend"
 
     var { DateTime } = require('luxon');
 
@@ -22,6 +24,7 @@
     let stopped = true
     let play_interval
     let datetime_array
+    let initial_datetime
     let source_array
     let current_frame
     const delay = 1000 // ms
@@ -53,8 +56,7 @@
             })
             // Start animation
             stopped = false
-            play_interval = setInterval(animate, delay)
-            playing = true
+            play()
         } else {
             alert($_("Animation.not_enough"))
         }
@@ -63,8 +65,7 @@
     // Stop the animation. Next start requires setup.
     function terminateAnimation(){
         stopped = true
-        playing = false
-        clearInterval(play_interval)
+        stop()
     }
 
     // Update datetime while playing
@@ -83,13 +84,28 @@
             startAnimation()
         } else {
             if (playing){ // pause animation
-                clearInterval(play_interval)
-                playing = false
-            } else { // start animation
-                play_interval = setInterval(animate, delay)
-                playing = true
+                stop()
+            } else { // restart animation
+                play()
             }
         }
+    }
+
+    function stop(){
+        clearInterval(play_interval)
+        playing = false
+        if (initial_datetime != get(current_datetime)){
+            getStorms()
+        } else {
+            updateStormSettings('visible', true)
+        }
+    }
+
+    function play(){
+        initial_datetime = get(current_datetime)
+        updateStormSettings('visible', false)
+        play_interval = setInterval(animate, delay)
+        playing = true
     }
 
     function next(){
