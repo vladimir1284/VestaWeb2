@@ -20,6 +20,11 @@ export function getVilChart(canvasID, storm, labels, text){
         }
     ]};
     const options_vil_dbzm ={
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
         scales: {
             y: {
                 title: {

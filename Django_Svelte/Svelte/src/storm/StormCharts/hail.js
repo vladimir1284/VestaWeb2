@@ -35,6 +35,11 @@ export function getHailChart(canvasID, storm, labels, text){
         }
     ]};
     const options_hail ={
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
         layout:{
             
         },

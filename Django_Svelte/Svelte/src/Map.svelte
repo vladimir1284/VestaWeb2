@@ -8,7 +8,7 @@
     import Overlay from 'ol/Overlay';
     import {transform} from 'ol/proj';
 
-    import { onMount } from 'svelte';
+    import { onMount, afterUpdate } from 'svelte';
     import RadarOL from './RadarOL.svelte';
     import StormOL, {createStromsOverlay} from './storm/StormOL.svelte';
     import StormModal from './storm/StormModal.svelte'
@@ -20,8 +20,7 @@
     import Pannel, {pannelController} from './controls/Pannel'
     import { get } from 'svelte/store'
 
-    import { mapProj, view, layers, map, storms } from './store'
-    import { radars } from './db/radars';
+    import { mapProj, view, layers, map, radars } from './store'
     import { init } from './backend';
 
     // Settings
@@ -33,22 +32,24 @@
     let StormData = {'show':false, 'storm':null}
     let showStormTable = false
     let show_label = false
+    let radars_array
 
-    // Create projections
-    // TODO select a non deprecated EPSG proyection for the map
-    proj4.defs("EPSG:2085",
-            "+proj=lcc +lat_1=22.35 +lat_0=22.35 +lon_0=-81"+
-            " +k_0=0.99993602 +x_0=500000 +y_0=280296.016"+
-            " +ellps=clrk66 +units=m +datum=NAD27 +no_defs");
-    
-    radars.forEach(function (radar, index){
-        proj4.defs(radar.id,
-            `+proj=aeqd +lat_0=${radar.location.lat} +lon_0=${radar.location.lon}` +
-            "+x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs");
-    });
-    register(proj4);
 
     function createMap(){
+        // Create projections
+        // TODO select a non deprecated EPSG proyection for the map
+        proj4.defs("EPSG:2085",
+                "+proj=lcc +lat_1=22.35 +lat_0=22.35 +lon_0=-81"+
+                " +k_0=0.99993602 +x_0=500000 +y_0=280296.016"+
+                " +ellps=clrk66 +units=m +datum=NAD27 +no_defs");
+        
+            radars_array.forEach(function (radar, index){
+            proj4.defs(radar.id,
+                `+proj=aeqd +lat_0=${radar.location.lat} +lon_0=${radar.location.lon}` +
+                "+x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs");
+        });
+        register(proj4);
+
 
         // Mouse position control
         const mousePositionControl = new MousePosition({
@@ -107,17 +108,7 @@
             zoom = map.getView().getZoom()
             view.set({zoom: zoom, center: center}) // Persist    
         
-        });
-
-        // Overlay en la ubicación de los radares
-        radars.forEach(function (radar, index){
-            const radar_ol = new Overlay({
-                element: document.getElementById(`radar-${radar.id}`),
-                positioning: 'center-center'
-            });
-            radar_ol.setPosition(transform([0,0], radar.id, mapProj));
-            map.addOverlay(radar_ol);
-        });        
+        });     
         
         
      return map   
@@ -125,6 +116,7 @@
 
     async function mapAction() {   
         await init()  
+        radars_array = Object.values(get(radars))
         map.set(createMap())
         // Overlay de las tormentas
         createStromsOverlay()
@@ -132,6 +124,22 @@
 
     // Do the job once the DOM was generated
     onMount(mapAction);
+
+    function radarOverlays(){
+    if (radars_array){          
+        // Overlay en la ubicación de los radares
+        radars_array.forEach(function (radar, index){
+            const radar_ol = new Overlay({
+                element: document.getElementById(`radar-${radar.id}`),
+                positioning: 'center-center'
+            });
+            radar_ol.setPosition(transform([0,0], radar.id, mapProj));
+            get(map).addOverlay(radar_ol);
+        });   
+    }
+  }
+
+  afterUpdate(radarOverlays)
 </script>
 
 
@@ -145,9 +153,11 @@
 />
 
 <!-- Mostrar los emplazamientos de currentRadar -->
-{#each radars as radar}
-    <RadarOL radar={radar}/>
-{/each}
+{#if radars_array}
+    {#each radars_array as radar}
+        <RadarOL radar={radar}/>
+    {/each}
+{/if}
 
 <!-- Mostrar los datos de la celda seleccionada -->
 <StormModal bind:StormData={StormData}/>

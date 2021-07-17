@@ -44,18 +44,24 @@
         "radar":"Radar",
         "cell":"Celda:",
         "hail": {
-            "poh": "POH",
-            "posh": "POSH"
+            "poh": "Granizo",
+            "posh": "Granizo severo",
+            "title": "Probabilidad de",
+            "connector": "y"
         },
         "height": {
-            "centroid": "CENT",
-            "dbzm": "DBZM",
-            "unit": "km"
+            "centroid": "Centroide",
+            "dbzm": "Reflectividad máxima",
+            "unit": "km",
+            "title": "Altura de la",
+            "connector": "y el"
         },
         "vil": {
-            "vil": "CB VIL",
-            "dbzm": "DBZM",
-            "unit": "dbZ - kg/m^2"
+            "vil": "Volumen de líquido",
+            "dbzm": "Reflectividad máxima",
+            "unit": "dbZ - kg/m^2",
+            "title": " ",
+            "connector": "y"
         }
     },
     "Radar": {
@@ -78,7 +84,18 @@
         "next":"Observación siguiente"
     },
     "DatePicker":{
-        "datetime":"Cambiar la fecha"
+        "datetime":"Cambiar la fecha",
+        "years": "{n, plural, =0 {} one {# año } other {# años }}",
+        "months": "{n, plural, =0 {} one {# mes } other {# meses }}",
+        "days": "{n, plural, =0 {} one {# día } other {# días }}",
+        "hours": "{n, plural, =0 {} one {# hora } other {# horas }}",
+        "minutes": "{n, plural, =0 {} one {# minuto } other {# minutos }}",
+        "alert": {
+            "header": "El producto encontrado es ",
+            "footer": " de la fecha solicitada.",
+            "after": " después",
+            "before": " antes"
+        }
     },
     "RadarSwitch": {
         "radar":"Cambiar de radar"

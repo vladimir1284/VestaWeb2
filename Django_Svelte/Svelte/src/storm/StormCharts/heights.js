@@ -107,6 +107,9 @@ export function getHeightsChart(canvasID, storm, labels, text){
         plugins: {
             annotation: {
                 annotations: bt_annotations
+            },
+            legend: {
+                display: false
             }
         },
         scales: {

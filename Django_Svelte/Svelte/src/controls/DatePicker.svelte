@@ -6,11 +6,12 @@
         Popover,
         Tooltip,
     } from "sveltestrap";
-    import { current_datetime, baseAPI, currentRadar, currentProduct, layers } from "../store"
+    import { current_datetime, layers } from "../store"
     import { _ } from "../services/i18n";
     import { get } from 'svelte/store'
     import Close from 'svelte-material-icons/Close.svelte'
     import {createProductSource} from "../Layers"
+    import {getClosestProduct, getStorms} from "../backend"
 
     var { DateTime } = require('luxon');
 
@@ -24,25 +25,33 @@
     }
     
     async function close(){
-        const dt = DateTime.fromISO(internal)
-        // Request the closest product 
-        const apiURL = baseAPI + get(currentRadar).id + '/' + 
-                        get(currentProduct).id + '/closest/' + 
-                        dt.setZone('UTC').toFormat("y-MM-dd'T'HH:mm:ss'Z'")
-        const res = await fetch(apiURL)
-        if (!res.ok) throw new Error('Bad response from: ' + apiURL)
-        const items = await res.json()
+        const dt = DateTime.fromISO(internal)        
+        const datetime = await getClosestProduct(dt)
         if (isOpen){
-            const cls = DateTime.fromISO(items.product.datetime)
-            alert(cls.setZone('local').toFormat('dd/MMM/y HH:mma'))
+            const cls = DateTime.fromISO(datetime)
+            // Check for different datetime 
+            const timeDelta = dt.diff(cls, ['years', 'months', 'days', 'hours', 'minutes']).toObject()
+            let str_alert = $_("DatePicker.alert.header")
+            const init_length = str_alert.length
+            str_alert += $_({ id: "DatePicker.years", values: { n: Math.abs(timeDelta.years) }})
+            str_alert += $_({ id: "DatePicker.months", values: { n: Math.abs(timeDelta.months) }})
+            str_alert += $_({ id: "DatePicker.days", values: { n: Math.abs(timeDelta.days) }})
+            str_alert += $_({ id: "DatePicker.hours", values: { n: Math.abs(timeDelta.hours) }})
+            str_alert += $_({ id: "DatePicker.minutes", values: { n: Math.abs(timeDelta.minutes) }})
+
+            if (str_alert.length > init_length){                
+                str_alert += (dt.toMillis() > cls.toMillis())?$_("DatePicker.alert.before") :$_("DatePicker.alert.after") 
+                str_alert += $_("DatePicker.alert.footer") 
+                alert(str_alert)
+            }
             isOpen = false
             current_datetime.set(cls)
+            getStorms()
             get(layers).product.setSource(createProductSource())
         }
     }
 
     $: input($current_datetime)
-    // $: output(internal)
 
 </script>
 

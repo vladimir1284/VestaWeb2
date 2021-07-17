@@ -1,7 +1,7 @@
 <script>
   import { Tooltip } from 'sveltestrap';
   import { _ } from './services/i18n';
-var { DateTime } = require('luxon');
+  var { DateTime } = require('luxon');
 
   export let radar;
 </script>
@@ -15,7 +15,7 @@ var { DateTime } = require('luxon');
   placement = 'top'>
   {$_('StormModal.radar')} {radar.id} <br>
   {$_('Radar.status')} {radar.status}<br>
-  {$_('Radar.last_scan')} {(DateTime.now().diff(radar.last)/60000).toFixed()}{$_('Radar.min')}
+  {$_('Radar.last_scan')} {(DateTime.now().diff(DateTime.fromISO(radar.last))/60000).toFixed()}{$_('Radar.min')}
 </Tooltip>
 </div>
 

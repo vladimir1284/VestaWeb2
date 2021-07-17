@@ -12,10 +12,10 @@
     import StopCircleOutline from "svelte-material-icons/StopCircleOutline.svelte";
     import { _ } from "../services/i18n";
     import { get } from "svelte/store";
-    import { current_datetime, baseAPI, currentRadar, currentProduct, layers } from "../store"
+    import { current_datetime, layers } from "../store"
     import {createProductSource} from "../Layers"
     import {updateStormSettings} from "../storm/storms"
-    import {getStorms} from "../backend"
+    import { getStorms, getConsecutiveProduct, getDatetimeList } from "../backend"
 
     var { DateTime } = require('luxon');
 
@@ -38,19 +38,11 @@
     // Setup the animation 
     async function startAnimation(){
         current_frame = 0
-        // Request the list of datetimes 
-        const apiURL = baseAPI + get(currentRadar).id + '/' + 
-                        get(currentProduct).id + '/' + 
-                        get(current_datetime).setZone('UTC').toFormat("y-MM-dd'T'HH:mm:ss'Z'") +
-                        '/' + nframes
-        const res = await fetch(apiURL)
-        if (!res.ok) throw new Error('Bad response from: ' + apiURL)
-        const items = await res.json()
-
-        if (items.product_array.length > 1) {
+        const product_array = await getDatetimeList(nframes)
+        if (product_array.length > 1) {
             datetime_array = [] // init
             source_array = []
-            items.product_array.slice().reverse()
+            product_array.slice().reverse()
                 .forEach(function (item, index) {
                 datetime_array.push(DateTime.fromISO(item.datetime))
             })
@@ -66,6 +58,7 @@
     function terminateAnimation(){
         stopped = true
         stop()
+        source_array = []
     }
 
     // Update datetime while playing
@@ -117,17 +110,11 @@
     }
 
     async function changeObservation(fcode){
-        // Request the closest product 
-        const apiURL = baseAPI + get(currentRadar).id + '/' + 
-                        get(currentProduct).id + '/' + fcode + '/' + 
-                        get(current_datetime).setZone('UTC').toFormat("y-MM-dd'T'HH:mm:ss'Z'")
-        const res = await fetch(apiURL)
-        if (!res.ok) throw new Error('Bad response from: ' + apiURL)
-        const items = await res.json()
-        const product = items.product
-        if (typeof(product)!="undefined"){
-            current_datetime.set(DateTime.fromISO(product.datetime))
+        const datetime = await getConsecutiveProduct(fcode)
+        if (typeof(datetime)!="undefined"){
+            current_datetime.set(DateTime.fromISO(datetime))
             get(layers).product.setSource(createProductSource())
+            getStorms()
         } else {
             alert($_("Animation.no_product")[fcode] +
                     get(current_datetime).setZone('local').toFormat('dd/MMM/y HH:mma'))

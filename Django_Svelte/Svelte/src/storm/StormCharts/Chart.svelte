@@ -53,17 +53,42 @@
 
 <Container >
     <Row cols={{ lg: 2}}>
-      <Col xs="auto"><canvas id="azran" height=180px></canvas></Col>
-      <Col xs="auto"><canvas id="alturas" height=180px></canvas></Col>
+        <Col xs="auto"><canvas id="azran" height=180px></canvas></Col>
+        <div>
+            <div class="title">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                {$_('StormModal.height.title')} <spam style="color: red;">{$_('StormModal.height.dbzm')}</spam>
+                {$_('StormModal.height.connector')} <spam style="color: purple;">{$_('StormModal.height.centroid')}</spam>.
+            </div>
+            <Col xs="auto"><canvas id="alturas" height=180px></canvas></Col>
+        </div>
     </Row>
     <Row cols={{ lg: 2}}>
-      <Col xs="auto"><canvas id="hail" height=180px></canvas></Col>
-      <Col xs="auto"><canvas id="vil_dbzm" height=180px></canvas></Col>
+        <div>
+            <div class="title">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                {$_('StormModal.hail.title')} <spam style="color: black;">{$_('StormModal.hail.poh')}</spam>
+                {$_('StormModal.hail.connector')} <spam style="color: green;">{$_('StormModal.hail.posh')}</spam>.
+            </div>            
+            <Col xs="auto"><canvas id="hail" height=180px></canvas></Col>
+        </div>
+        <div>
+            <div class="title">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                {$_('StormModal.vil.title')}<spam style="color: red;">{$_('StormModal.vil.dbzm')}</spam>
+                {$_('StormModal.vil.connector')} <spam style="color: blue;">{$_('StormModal.vil.vil')}</spam>.
+            </div>            
+            <Col xs="auto"><canvas id="vil_dbzm" height=180px></canvas></Col>
+        </div>
     </Row>
 </Container>
 
 <style>
 	#azran {
 		width: 100%;
+    }
+    .title {
+        text-align: center;
+        color: gray;
     }
 </style>
