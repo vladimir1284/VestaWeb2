@@ -119,7 +119,11 @@
         radars_array = Object.values(get(radars))
         map.set(createMap())
         // Overlay de las tormentas
-        createStromsOverlay()
+        try {
+            createStromsOverlay()            
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     // Do the job once the DOM was generated

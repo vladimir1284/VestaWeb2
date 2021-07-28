@@ -1,4 +1,4 @@
-file_name = "/home/vladimir/Dicso/Salvas-LAP-ene2017/Documents/Meteorologia/Vesta-PostGIS/Installer/palettes/et_16.plt"
+file_name = "/home/vladimir/Dicso/Salvas-LAP-ene2017/Documents/Meteorologia/Vesta-PostGIS/Installer/palettes/hires_vel1.plt"
 
 fichero = open(file_name,'r')
          
@@ -10,7 +10,7 @@ blue = [int(x) for x in fichero.readline().split()]
 
 str_arr = "["
 for i in range(1,length):
-    str_arr += "'#%.2X%.2X%.2X', " % (red[i], green[i], blue[i])    
+    str_arr += "#%.2X%.2X%.2X, " % (red[i], green[i], blue[i])    
 
 str_arr = str_arr[:-2] + "]"
 

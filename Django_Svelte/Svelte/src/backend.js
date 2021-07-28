@@ -45,7 +45,7 @@ async function getRadars(){
     if (!res.ok) throw new Error('Bad response from: ' + apiURL)
     const items = await res.json()
     radars.set(items.radars)
-    return currentRadar.set(items.radars["CCNR"]) // TODO this will be MOSAIC     
+    return currentRadar.set(items.radars["CCMW"]) // TODO this will be MOSAIC     
 }
 
 async function getLastProduct(){
@@ -106,13 +106,13 @@ async function getDatetimeList(nframes){
     return items.product_array
 }
 
-// export { getDatetimeList, getClosestProduct, getConsecutiveProduct, getStorms, init }
+export { getDatetimeList, getClosestProduct, getConsecutiveProduct, getStorms, init }
 
-export { _getDatetimeList as getDatetimeList, 
-        _getClosestProduct as getClosestProduct, 
-        _getConsecutiveProduct as getConsecutiveProduct, 
-        _getStorms as getStorms, 
-        _init as init }
+// export { _getDatetimeList as getDatetimeList, 
+//         _getClosestProduct as getClosestProduct, 
+//         _getConsecutiveProduct as getConsecutiveProduct, 
+//         _getStorms as getStorms, 
+//         _init as init }
 
 // ====================================== For DEMO =============================================
 
@@ -158,7 +158,7 @@ function _init(){
 
 function _getRadars(){
     radars.set(_radars)
-    return currentRadar.set(_radars["CCNR"]) // TODO this will be MOSAIC     
+    return currentRadar.set(_radars["CCMW"]) // TODO this will be MOSAIC     
 }
 
 function _getLastProduct(){

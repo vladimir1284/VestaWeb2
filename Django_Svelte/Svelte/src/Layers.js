@@ -34,8 +34,9 @@ export function createCoverSource(currentProduct){
 
 export function createProductSource(){
     const product = get(currentProduct)
+    console.log(get(current_datetime))
     return new Static({
-        url: base_url + get(currentRadar).id + '/' + product.id + '_' + get(current_datetime).toUTC().toFormat('yyyy-MM-dd_hh-mm-ss') + '.png',
+        url: base_url + get(currentRadar).id + '/' + product.id + '_' + get(current_datetime).toUTC().toFormat("y-MM-dd_HH-mm-ss") + '.png',
         projection: get(currentRadar).id,
         imageSmoothing: false,
         imageExtent: [-product.range, -product.range, 

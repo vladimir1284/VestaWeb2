@@ -23,9 +23,9 @@
   .radar {
     width: 12px;
     height:12px;
-    background: rgba(154, 245, 159, 0.678);
+    background: rgba(242, 154, 245, 0.678);
     border-style: solid;
-    border-color: rgba(51, 182, 11, 0.692);
+    border-color: rgba(182, 11, 116, 0.692);
     border-radius:50%;
     padding: 0;
     }

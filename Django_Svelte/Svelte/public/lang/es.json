@@ -7,9 +7,10 @@
         "opacity": "Opacidad",
         "cover": "Cobertura",
         "pname":{
-            "CR_38": "Máximos 640km",
+            "ULR_137": "Máximos",
             "DR_94": "Reflectividad base",
-            "ET_41": "Topes"
+            "DV_99": "Velocidad base",
+            "SDW_155": "Ancho espectral"
         },
         "map":{
             "orography": "Orografía",
