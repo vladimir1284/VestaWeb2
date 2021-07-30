@@ -27,7 +27,7 @@
             "forecast":"P",
             "past":"H"
         },
-        "azran":"DIS(km)",
+        "azran":"AZ(°) DIS(km)",
         "base":"BASE (km)",
         "top":"TOPE (km)",
         "vil":"VIL",
@@ -100,5 +100,20 @@
     },
     "RadarSwitch": {
         "radar":"Cambiar de radar"
+    },
+    "vwp": {
+        "tooltip":"Información del viento",
+        "title": "Salida del algoritmo VAD. Radar",
+        "ALT": "Altura (km)",
+        "U": "U (m/s)",
+        "V": "V (m/s)",
+        "W": "W (cm/s)",
+        "DIR": "DIR (°)",
+        "SPD": "VEL (km/h)",
+        "RMS": "RMS (km/h)",
+        "DIV": "DIV (10⁻³/s)",
+        "SRNG": "DIS (km)",
+        "ELEV": "ELEV (°)",
+        "time": "Tiempo"
     }
 }

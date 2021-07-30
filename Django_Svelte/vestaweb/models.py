@@ -112,3 +112,24 @@ class StormTracking(models.Model):
 
     def __str__(self):
         return self.label
+
+class VWP(models.Model):
+    created = models.DateTimeField()
+    radar = models.ForeignKey(Radar,
+                            on_delete=models.CASCADE,
+                            related_name='vwp')
+    hts  = fields.ArrayField(models.IntegerField())
+    u  = fields.ArrayField(models.FloatField())
+    v  = fields.ArrayField(models.FloatField())
+    w  = fields.ArrayField(models.FloatField())
+    dir  = fields.ArrayField(models.IntegerField())
+    rms = fields.ArrayField(models.FloatField())
+    div = fields.ArrayField(models.FloatField())
+    srng = fields.ArrayField(models.FloatField())
+    elev = fields.ArrayField(models.FloatField())
+
+    class Meta:
+        ordering = ('-created','radar')
+
+    def __str__(self):
+        return self.label

@@ -205,9 +205,85 @@ def getProductDescription(request, pcode):
                     }
     return JsonResponse({'description': description})
     
+  
+# Retrieve storm cells
+def get_vwp(request, radar, dt):    
+    radar = Radar.objects.get(radar_code = radar)
+
+    # Information of SS_62 product related to storm structure
+    try:
+        vwp = VWP.objects.get(radar=radar, created=dt)
+        vwp_data = []
+        for i in range(len(vwp.hts)):
+            vwp_data.append({
+                'ht':  vwp.hts[i],
+                'u':    vwp.u[i], 
+                'v':    vwp.v[i],
+                'w':    vwp.w[i],
+                'dir':    vwp.dir[i],
+                'rms':  vwp.rms[i],
+                'div':  vwp.div[i],
+                'srng': vwp.srng[i],
+                'elev': vwp.elev[i]
+            })
+    except ObjectDoesNotExist:
+        vwp_data = {}
+    return JsonResponse({'vwp': vwp_data,
+                         'radar': radar.radar_code,
+                         'datetime': dt})  
     
+  
+# Retrieve VWP data
+def get_vwp(request, radar, dt):    
+    radar = Radar.objects.get(radar_code = radar)
+
+    # Information of SS_62 product related to storm structure
+    try:
+        vwp = VWP.objects.get(radar=radar, created=dt)
+        vwp_data = []
+        for i in range(len(vwp.hts)):
+            vwp_data.append({
+                'ht':  vwp.hts[i],
+                'u':    vwp.u[i], 
+                'v':    vwp.v[i],
+                'w':    vwp.w[i],
+                'dir':    vwp.dir[i],
+                'rms':  vwp.rms[i],
+                'div':  vwp.div[i],
+                'srng': vwp.srng[i],
+                'elev': vwp.elev[i]
+            })
+    except ObjectDoesNotExist:
+        vwp_data = {}
+    return JsonResponse({'vwp': vwp_data,
+                         'radar': radar.radar_code,
+                         'datetime': dt})  
     
+   
+# Retrieve VWP data array
+def get_vwp_array(request, radar, dt, n, step):    
+    radar = Radar.objects.get(radar_code = radar)
+    vwp_array = VWP.objects.filter(radar=radar).filter(created__lte=dt).order_by('-created')[:(n*step)]
+    vwp_data = []
+    # Processing on a step interval
+    for vwp in vwp_array[0::step]: 
+        data = []
+        for i in range(len(vwp.hts)):
+            data.append({
+                'ht':  vwp.hts[i],
+                'vel':    (vwp.u[i]**2 + vwp.v[i]**2)**0.5, 
+                'dir':    vwp.dir[i],
+                'rms':  vwp.rms[i],
+            })
+        vwp_data.append({'datetime': vwp.created, 'data': data})
+        
+    return JsonResponse({'vwp': vwp_data,
+                         'radar': radar.radar_code,
+                         'len': len(vwp_data),
+                         'n': n,
+                         'setp': step})  
     
+ 
     
     
     

@@ -19,6 +19,7 @@
     import Animation from "./Animation.svelte";
     import DatePicker from "./DatePicker.svelte";
     import RadarSwitch from "./RadarSwitch.svelte";
+    import VWP from "./VWP.svelte";
 
     export let showStormTable
 
@@ -52,6 +53,10 @@
         <LayerSwitch 
             bind:showStormTable={showStormTable}
         />
+    </div>
+
+    <div>
+        <VWP/>
     </div>
 
 </div>

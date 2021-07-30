@@ -70,7 +70,7 @@
           <th id="visible">{$_('StormTable.visibility')}</th>
           <th id="future">{$_('StormTable.check.forecast')}</th>
           <th id="past">{$_('StormTable.check.past')}</th>
-          <th>AZ(&deg;) {$_('StormTable.azran')}</th>
+          <th>{$_('StormTable.azran')}</th>
           <th>{$_('StormTable.base')}</th>
           <th>{$_('StormTable.top')}</th>
           <th>{$_('StormTable.vil')} (kg/m<sup>2</sup>)</th>

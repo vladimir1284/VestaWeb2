@@ -56,6 +56,25 @@ async function getLastProduct(){
     return current_datetime.set(DateTime.fromISO(items.datetime))
 }
 
+async function getVWParray(nframes = 8, dt = get(current_datetime), step = 1){
+    const apiURL = baseAPI + get(currentRadar).id +  '/vwp_array/'+ 
+                    dt.setZone('UTC').toFormat("y-MM-dd'T'HH:mm:ss'Z'") +
+                    '/'+ nframes +'/' + step
+    const res = await fetch(apiURL)
+    if (!res.ok) throw new Error('Bad response from: ' + apiURL)
+    const items = await res.json() 
+    return items.vwp
+}
+
+async function getVWP(dt = get(current_datetime)){
+    const apiURL = baseAPI + get(currentRadar).id +  '/vwp/'+ 
+                    dt.setZone('UTC').toFormat("y-MM-dd'T'HH:mm:ss'Z'")
+    const res = await fetch(apiURL)
+    if (!res.ok) throw new Error('Bad response from: ' + apiURL)
+    const items = await res.json() 
+    return items.vwp
+}
+
 async function getStorms(){
     const apiURL = baseAPI + get(currentRadar).id +  '/storm_cells/'+ 
                     get(current_datetime).setZone('UTC').toFormat("y-MM-dd'T'HH:mm:ss'Z'")
@@ -106,7 +125,7 @@ async function getDatetimeList(nframes){
     return items.product_array
 }
 
-export { getDatetimeList, getClosestProduct, getConsecutiveProduct, getStorms, init }
+export { getDatetimeList, getClosestProduct, getConsecutiveProduct, getStorms, init, getVWP, getVWParray }
 
 // export { _getDatetimeList as getDatetimeList, 
 //         _getClosestProduct as getClosestProduct, 
