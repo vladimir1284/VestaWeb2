@@ -10,7 +10,11 @@
             "ULR_137": "Máximos",
             "DR_94": "Reflectividad base",
             "DV_99": "Velocidad base",
-            "SDW_155": "Ancho espectral"
+            "V_27": "Velocidad base",
+            "SW_30": "Ancho espectral",
+            "OHP_78": "Acumulado de precipitaciones (1hr)",
+            "THP_79": "Acumulado de precipitaciones (3hr)",
+            "STP_80": "Precipitaciones de tormenta"
         },
         "map":{
             "orography": "Orografía",
@@ -110,7 +114,7 @@
         "W": "W (cm/s)",
         "DIR": "DIR (°)",
         "SPD": "VEL (km/h)",
-        "RMS": "RMS (km/h)",
+        "RMS": "ERROR (km/h)",
         "DIV": "DIV (10⁻³/s)",
         "SRNG": "DIS (km)",
         "ELEV": "ELEV (°)",

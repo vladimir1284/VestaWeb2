@@ -34,8 +34,11 @@ export function createCoverSource(currentProduct){
 
 export function createProductSource(){
     const product = get(currentProduct)
+    const dt = get(current_datetime).toUTC()
     return new Static({
-        url: base_url + get(currentRadar).id + '/' + product.id + '_' + get(current_datetime).toUTC().toFormat("y-MM-dd_HH-mm-ss") + '.png',
+        url: base_url + 'ftp/' + get(currentRadar).id + '/' + product.id + '/' + 
+        dt.toFormat("y") + '/' + dt.toFormat("MM")+ '/' + dt.toFormat("dd")
+        + '/' + product.id + '_' + dt.toFormat("y-MM-dd_HH-mm-ss") + '.png',
         projection: get(currentRadar).id,
         imageSmoothing: false,
         imageExtent: [-product.range, -product.range, 

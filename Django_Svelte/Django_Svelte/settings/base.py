@@ -27,34 +27,35 @@ BASE_DIR = os.path.dirname(PROJECT_DIR)
 
 INSTALLED_APPS = [
     # This project
-    'website',
+    # 'website',
     'vestaweb',
     'corsheaders', # Just for develoment
 
-    # CodeRed CMS
-    'coderedcms',
-    'bootstrap4',
-    'modelcluster',
-    'taggit',
-    'wagtailfontawesome',
-    'wagtailcache',
-    'wagtailimportexport',
-
-    # Wagtail
-    'wagtail.contrib.forms',
-    'wagtail.contrib.redirects',
-    'wagtail.embeds',
-    'wagtail.sites',
-    'wagtail.users',
-    'wagtail.snippets',
-    'wagtail.documents',
-    'wagtail.images',
-    'wagtail.search',
-    'wagtail.core',
-    'wagtail.contrib.settings',
-    'wagtail.contrib.modeladmin',
-    'wagtail.contrib.table_block',
-    'wagtail.admin',
+    # # CodeRed CMS
+    # 'coderedcms',
+    # 'bootstrap4',
+    # 'modelcluster',
+    # 'taggit',
+    # 'wagtailfontawesome',
+    # 'wagtailcache',
+    # 'wagtailimportexport',
+    #
+    # # Wagtail
+    # 'wagtail.contrib.forms',
+    # 'wagtail.contrib.redirects',
+    # 'wagtail.embeds',
+    # 'wagtail.sites',
+    # 'wagtail.users',
+    # 'wagtail.snippets',
+    # 'wagtail.documents',
+    # 'wagtail.images',
+    # 'wagtail.search',
+    # 'wagtail.core',
+    # 'wagtail.contrib.settings',
+    # 'wagtail.contrib.modeladmin',
+    # 'wagtail.contrib.table_block',
+    # 'wagtail.admin',
+    # 'wagtailseo.models.SeoSettings',
 
     # Django
     'django.contrib.admin',
@@ -68,7 +69,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     # Save pages to cache. Must be FIRST.
-    'wagtailcache.cache.UpdateCacheMiddleware',
+    # 'wagtailcache.cache.UpdateCacheMiddleware',
 
     # Common functionality
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -86,10 +87,10 @@ MIDDLEWARE = [
     # 'django.middleware.common.BrokenLinkEmailsMiddleware',
 
     # CMS functionality
-    'wagtail.contrib.redirects.middleware.RedirectMiddleware',
+    # 'wagtail.contrib.redirects.middleware.RedirectMiddleware',
 
     # Fetch from cache. Must be LAST.
-    'wagtailcache.cache.FetchFromCacheMiddleware',
+    # 'wagtailcache.cache.FetchFromCacheMiddleware',
 ]
 
 ROOT_URLCONF = 'Django_Svelte.urls'
@@ -108,7 +109,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'wagtail.contrib.settings.context_processors.settings',
+                # 'wagtail.contrib.settings.context_processors.settings',
             ],
         },
     },
@@ -223,5 +224,4 @@ TAGGIT_CASE_INSENSITIVE = True
 # Just for development
 ALLOWED_HOSTS=['*']
 CORS_ORIGIN_ALLOW_ALL = True
-
 

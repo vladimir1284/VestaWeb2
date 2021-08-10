@@ -7,13 +7,18 @@
     import {drawAzran} from './azran.js'
     var { DateTime } = require('luxon');
     import { _ } from '../../services/i18n';
+    import {storm_times} from '../../store'
+    import {get} from 'svelte/store'
 
     export let storm
 
 
     function init() {
         let labels = [null]
-        const times = storm.time.slice(-storm.centroids.length)
+        const ndata = storm.centroids.length
+
+        // Prepare time labels
+        const times = get(storm_times).slice(-ndata)
         times.forEach(function (min, index){
             const time = DateTime.fromSeconds(min*60)
             labels.push(time.toFormat("HH:mm"))
@@ -24,18 +29,43 @@
             dbzm: $_('StormModal.height.dbzm'),
             unit: $_('StormModal.height.unit'),
         }
-        var hgtsChart = getHeightsChart('alturas', storm, labels, text)
+
+        // Arrange data
+        let arranged_storm = {}
+        arranged_storm.poh = []
+        arranged_storm.posh = []
+        arranged_storm.centroids = []
+        arranged_storm.max_ref_hgts = []
+        arranged_storm.bases = []
+        arranged_storm.tops = []
+        arranged_storm.maxZ = []
+        arranged_storm.vil = []
+        
+        for(let i = 0; i < ndata; i++){
+            const idx = (storm.lst_vol_data_ptr + i) % ndata
+            arranged_storm.poh.push(storm.poh[idx])
+            arranged_storm.posh.push(storm.posh[idx])
+            arranged_storm.centroids.push(storm.centroids[idx])
+            arranged_storm.max_ref_hgts.push(storm.max_ref_hgts[idx])
+            arranged_storm.bases.push(storm.bases[idx])
+            arranged_storm.tops.push(storm.tops[idx])
+            arranged_storm.maxZ.push(storm.maxZ[idx])
+            arranged_storm.vil.push(storm.vil[idx])
+        }
+
+        // Create charts
+        var hgtsChart = getHeightsChart('alturas', arranged_storm, labels, text)
         text = {
             poh: $_('StormModal.hail.poh'),
             posh: $_('StormModal.hail.posh'),
         }
-        var hailChart = getHailChart('hail', storm, labels, text)
+        var hailChart = getHailChart('hail', arranged_storm, labels, text)
         text = {
             vil: $_('StormModal.vil.vil'),
             dbzm: $_('StormModal.vil.dbzm'),
             unit: $_('StormModal.vil.unit'),
         }
-        var vil_dbzmChart = getVilChart('vil_dbzm', storm, labels, text)
+        var vil_dbzmChart = getVilChart('vil_dbzm', arranged_storm, labels, text)
         var azranChart = drawAzran('azran', storm)
         return {
             destroy: () => {

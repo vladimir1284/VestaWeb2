@@ -95,11 +95,11 @@
                   bind:checked={storm.settings.past} label=""/> 
             </th>
             <td class="text-center">{("0"+storm.azimut).slice(-3)} / {nm2kmSTR(storm.range)}</td>
-            <td class="text-center">{kft2kmSTR_b(storm.bases.slice(-1))}</td>
-            <td class="text-center">{kft2kmSTR_t(storm.tops.slice(-1))}</td>
-            <td class="text-center">{storm.vil.slice(-1)}</td>
-            <td class="text-center">{storm.maxZ.slice(-1)}</td>
-            <td class="text-center">{kft2kmSTR(storm.centroids.slice(-1),"")}</td>
+            <td class="text-center">{kft2kmSTR_b(storm.bases[storm.lst_vol_data_ptr-1])}</td>
+            <td class="text-center">{kft2kmSTR_t(storm.tops[storm.lst_vol_data_ptr-1])}</td>
+            <td class="text-center">{storm.vil[storm.lst_vol_data_ptr-1]}</td>
+            <td class="text-center">{storm.maxZ[storm.lst_vol_data_ptr-1]}</td>
+            <td class="text-center">{kft2kmSTR(storm.centroids[storm.lst_vol_data_ptr-1],"")}</td>
           </tr>
         {/each}
 

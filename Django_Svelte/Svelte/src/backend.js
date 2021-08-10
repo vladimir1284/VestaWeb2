@@ -1,5 +1,5 @@
 import {current_datetime, radars, currentRadar, currentProduct, 
-        baseAPI, availableProducts, storms} from './store'
+        baseAPI, availableProducts, storms, storm_times} from './store'
 import {get} from 'svelte/store'
 
 var { DateTime } = require('luxon');
@@ -76,7 +76,7 @@ async function getVWP(dt = get(current_datetime)){
 }
 
 async function getStorms(){
-    const apiURL = baseAPI + get(currentRadar).id +  '/storm_cells/'+ 
+    const apiURL = baseAPI + get(currentRadar).id +  '/storm_cells/20/'+ 
                     get(current_datetime).setZone('UTC').toFormat("y-MM-dd'T'HH:mm:ss'Z'")
     const res = await fetch(apiURL)
     if (!res.ok) throw new Error('Bad response from: ' + apiURL)
@@ -88,6 +88,7 @@ async function getStorms(){
                             'past': false,
                             'visible': true}        
     });
+    storm_times.set(items.times)
     return storms.set(storm_list)
 }
 

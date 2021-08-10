@@ -1,21 +1,21 @@
 from django.conf import settings
 from django.urls import include, path, re_path
 from django.contrib import admin
-from wagtail.documents import urls as wagtaildocs_urls
-from coderedcms import admin_urls as coderedadmin_urls
-from coderedcms import search_urls as coderedsearch_urls
-from coderedcms import urls as codered_urls
+# from wagtail.documents import urls as wagtaildocs_urls
+# from coderedcms import admin_urls as coderedadmin_urls
+# from coderedcms import search_urls as coderedsearch_urls
+# from coderedcms import urls as codered_urls
 
 urlpatterns = [
     # Admin
     path('django-admin/', admin.site.urls),
-    path('admin/', include(coderedadmin_urls)),
+    # path('admin/', include(coderedadmin_urls)),
 
-    # Documents
-    path('docs/', include(wagtaildocs_urls)),
-
-    # Search
-    path('search/', include(coderedsearch_urls)),
+    # # Documents
+    # path('docs/', include(wagtaildocs_urls)),
+    #
+    # # Search
+    # path('search/', include(coderedsearch_urls)),
 
     # For vestaweb
     path('vestaweb/', include('vestaweb.urls')),

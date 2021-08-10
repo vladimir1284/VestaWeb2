@@ -11,6 +11,7 @@ export const baseAPI = "http://localhost:8000/vestaweb/"
 export const current_datetime = writable(DateTime.utc())
 
 export const storms = writable()
+export const storm_times = writable()
 
 export const map = writable()
 

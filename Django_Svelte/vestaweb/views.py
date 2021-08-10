@@ -4,6 +4,7 @@ from .models import *
 from datetime import datetime
 from django.core.exceptions import ObjectDoesNotExist
 import pytz
+import numpy as np
 
 # Retrieve the latest raster product
 def last_raster(request, radar):
@@ -119,16 +120,25 @@ def get_available(request, radar, dt):
                          'radar': radar.radar_code,
                          'datetime': dt})
 
-# Retrieve storm cells
-def get_storm_cells(request, radar, dt):    
+
+
+# Retrieve N storm cells
+def get_Nstorm_cells(request, radar, n, dt): 
     radar = Radar.objects.get(radar_code = radar)
     storm_cells = {}
     # Information of SS_62 product related to storm structure
     ss = StormCell.objects.filter(radar=radar, created=dt).order_by('label')
     # Information of STI_58 product related to storm trend
     sti = StormTracking.objects.filter(radar=radar, created=dt).order_by('label')
-    # Create the final objects
+    # Create the final objects sorted by vil
+    vils = []
     for cell in ss:
+        vils.append(cell.vil[cell.lst_vol_data_ptr-1])
+    index = np.argsort(vils).tolist()
+    index.reverse()
+    
+    for i in index:
+        cell = ss[i]
         storm_cells.setdefault(cell.label, {
             'id': cell.label,
             'azimut': cell.azimut, 
@@ -141,8 +151,16 @@ def get_storm_cells(request, radar, dt):
             'posh': cell.posh,
             'vil': cell.vil,
             'maxZ': cell.maxZ,
-            'time': cell.time
+            'lst_vol_data_ptr': cell.lst_vol_data_ptr
         })
+    # Arrange times
+    mins = cell.time
+    last = cell.lst_vol_time_ptr
+    times = []
+    ndata = len(mins)
+    for i in range(ndata):
+        idx = (last + i) % ndata
+        times.append(mins[idx])
     n_sti = 0
     for cell in sti:
         try:
@@ -155,13 +173,19 @@ def get_storm_cells(request, radar, dt):
             n_sti += 1
         except KeyError:
             pass
-        
-    return JsonResponse({'storm_cells': list(storm_cells.values()),
+    
+    sc = list(storm_cells.values())[:n]
+    return JsonResponse({'storm_cells': sc,
                          'radar': radar.radar_code,
                          'datetime': dt,
-                         'n_sti': n_sti,
-                         'n_ss': len(ss)})
+                         'times': times,
+                         'n_sc': len(sc)})
     
+    
+# Retrieve storm cells
+def get_storm_cells(request, radar, dt):  
+    return get_Nstorm_cells(request, radar, None, dt)
+
 # Retrieve storm structure adaptation data 
 def get_ss_adata(request, radar, dt):  
     radar = Radar.objects.get(radar_code = radar) 
@@ -233,32 +257,33 @@ def get_vwp(request, radar, dt):
                          'datetime': dt})  
     
   
-# Retrieve VWP data
-def get_vwp(request, radar, dt):    
-    radar = Radar.objects.get(radar_code = radar)
+# # Retrieve VWP data
+# def get_vwp(request, radar, dt):    
+#     radar = Radar.objects.get(radar_code = radar)
+#
+#     # Information of SS_62 product related to storm structure
+#     try:
+#         vwp = VWP.objects.get(radar=radar, created=dt)
+#         vwp_data = []
+#         for i in range(len(vwp.hts)):
+#             vwp_data.append({
+#                 'ht':  vwp.hts[i],
+#                 'u':    vwp.u[i], 
+#                 'v':    vwp.v[i],
+#                 'w':    vwp.w[i],
+#                 'dir':    vwp.dir[i],
+#                 'rms':  vwp.rms[i],
+#                 'div':  vwp.div[i],
+#                 'srng': vwp.srng[i],
+#                 'elev': vwp.elev[i]
+#             })
+#     except ObjectDoesNotExist:
+#         vwp_data = {}
+#     return JsonResponse({'vwp': vwp_data,
+#                          'radar': radar.radar_code,
+#                          'datetime': dt})  
+#
 
-    # Information of SS_62 product related to storm structure
-    try:
-        vwp = VWP.objects.get(radar=radar, created=dt)
-        vwp_data = []
-        for i in range(len(vwp.hts)):
-            vwp_data.append({
-                'ht':  vwp.hts[i],
-                'u':    vwp.u[i], 
-                'v':    vwp.v[i],
-                'w':    vwp.w[i],
-                'dir':    vwp.dir[i],
-                'rms':  vwp.rms[i],
-                'div':  vwp.div[i],
-                'srng': vwp.srng[i],
-                'elev': vwp.elev[i]
-            })
-    except ObjectDoesNotExist:
-        vwp_data = {}
-    return JsonResponse({'vwp': vwp_data,
-                         'radar': radar.radar_code,
-                         'datetime': dt})  
-    
    
 # Retrieve VWP data array
 def get_vwp_array(request, radar, dt, n, step):    

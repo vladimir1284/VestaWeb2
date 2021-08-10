@@ -87,6 +87,8 @@ class StormCell(models.Model):
     vil = fields.ArrayField(models.IntegerField())
     maxZ = fields.ArrayField(models.IntegerField())
     time = fields.ArrayField(models.IntegerField())
+    lst_vol_time_ptr = models.IntegerField()
+    lst_vol_data_ptr = models.IntegerField()
 
     class Meta:
         ordering = ('-created','radar','-vil')

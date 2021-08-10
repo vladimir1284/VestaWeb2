@@ -1,4 +1,4 @@
-file_name = "/home/vladimir/Dicso/Salvas-LAP-ene2017/Documents/Meteorologia/Vesta-PostGIS/Installer/palettes/hires_vel1.plt"
+file_name = "/home/vladimir/Dicso/Salvas-LAP-ene2017/Documents/Meteorologia/Vesta-PostGIS/Installer/palettes/vel_16.plt"
 
 fichero = open(file_name,'r')
          
