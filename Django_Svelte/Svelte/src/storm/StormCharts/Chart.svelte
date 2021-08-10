@@ -7,7 +7,7 @@
     import {drawAzran} from './azran.js'
     var { DateTime } = require('luxon');
     import { _ } from '../../services/i18n';
-    import {storm_times} from '../../store'
+    import {storm_times, current_datetime} from '../../store'
     import {get} from 'svelte/store'
 
     export let storm
@@ -19,8 +19,9 @@
 
         // Prepare time labels
         const times = get(storm_times).slice(-ndata)
+        const date = get(current_datetime).ts/1000 - times.slice(-1)*60
         times.forEach(function (min, index){
-            const time = DateTime.fromSeconds(min*60)
+            const time = DateTime.fromSeconds(min*60 + date)
             labels.push(time.toFormat("HH:mm"))
         })
         labels.push(null)
