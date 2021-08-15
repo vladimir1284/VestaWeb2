@@ -45,8 +45,9 @@ def get_closest_raster(request, radar, pcode, dt):
         except IndexError:
             product = closest_greater_qs[0]
     except IndexError:
-        raise ProductDescription.DoesNotExist("There is no closest object"
-                                    " because there are no objects.")
+        return JsonResponse({'error': "there are no objects"})
+        # raise ProductDescription.DoesNotExist("There is no closest object"
+        #                             " because there are no objects.")
     if (not(product)):
         dt = datetime.strptime(dt, "%Y-%m-%dT%H:%M:%SZ")
         timezone = pytz.timezone('UTC')
@@ -154,13 +155,15 @@ def get_Nstorm_cells(request, radar, n, dt):
             'lst_vol_data_ptr': cell.lst_vol_data_ptr
         })
     # Arrange times
-    mins = cell.time
-    last = cell.lst_vol_time_ptr
     times = []
-    ndata = len(mins)
-    for i in range(ndata):
-        idx = (last + i) % ndata
-        times.append(mins[idx])
+    if (len(vils) > 0):
+        mins = cell.time
+        last = cell.lst_vol_time_ptr
+        ndata = len(mins)
+        for i in range(ndata):
+            idx = (last + i) % ndata
+            times.append(mins[idx])
+            
     n_sti = 0
     for cell in sti:
         try:

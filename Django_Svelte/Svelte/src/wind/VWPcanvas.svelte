@@ -103,7 +103,6 @@
   }
 
   function drawColumn(ctx, vwp, x0, y0, hdelta){
-    console.log(vwp)
     // Draw ticks
     ctx.beginPath()
     ctx.strokeStyle = "black"

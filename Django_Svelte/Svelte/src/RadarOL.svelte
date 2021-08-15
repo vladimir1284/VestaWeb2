@@ -2,11 +2,12 @@
   import { Tooltip } from 'sveltestrap';
   import { _ } from './services/i18n';
   var { DateTime } = require('luxon');
+  import {switchRadar} from './controls/RadarSwitch.svelte'
 
   export let radar;
 </script>
 
-<button class="radar" id={"radar-"+radar.id}></button>
+<button on:click={switchRadar(radar.id)} class="radar" id={"radar-"+radar.id}></button>
 
 <div class="mt-3">
 <Tooltip 
@@ -23,9 +24,9 @@
   .radar {
     width: 12px;
     height:12px;
-    background: rgba(242, 154, 245, 0.678);
+    background: rgba(92, 91, 87, 0.568);
     border-style: solid;
-    border-color: rgba(182, 11, 116, 0.692);
+    border-color: rgb(0, 0, 0);
     border-radius:50%;
     padding: 0;
     }

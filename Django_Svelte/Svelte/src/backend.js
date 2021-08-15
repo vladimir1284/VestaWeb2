@@ -45,7 +45,7 @@ async function getRadars(){
     if (!res.ok) throw new Error('Bad response from: ' + apiURL)
     const items = await res.json()
     radars.set(items.radars)
-    return currentRadar.set(items.radars["CCMW"]) // TODO this will be MOSAIC     
+    return currentRadar.set(items.radars["CCSB"]) // TODO this will be MOSAIC     
 }
 
 async function getLastProduct(){
@@ -111,7 +111,11 @@ async function getClosestProduct(dt){
     const res = await fetch(apiURL)
     if (!res.ok) throw new Error('Bad response from: ' + apiURL)
     const items = await res.json()
-    return items.product.datetime
+    if (typeof(items.product)!="undefined"){
+        return items.product.datetime
+    } else {
+        return "1970-01-01T00:00:00Z"
+    }
 }
 
 async function getDatetimeList(nframes){    
