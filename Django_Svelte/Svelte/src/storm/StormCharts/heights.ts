@@ -1,5 +1,6 @@
 import Chart from 'chart.js/auto'
 import annotationPlugin from 'chartjs-plugin-annotation';
+import type {ChartConfiguration} from 'chart.js/types/index.esm'
 Chart.register(annotationPlugin);
 
 
@@ -10,7 +11,7 @@ page 3-117. Document Number 2620001L
 If the value is over 700, then 1000 has been added to denote that 
 the CELL TOP (BASE) was detected on the highest (lowest) elevation scan.
 */
-function convertBaseAndTopKft2Km(data){
+function convertBaseAndTopKft2Km(data: number[]){
     let converted = []
     data.forEach(function (value, index){
         if (value > 70){
@@ -26,7 +27,7 @@ function convertBaseAndTopKft2Km(data){
 }
 
 
-function convertArrKft2Km(data) {
+function convertArrKft2Km(data: number[]) {
     let converted = []
     data.forEach(function (value, index){
         converted.push(value*.3048)
@@ -122,10 +123,10 @@ export function getHeightsChart(canvasID, storm, labels, text){
             }
         }
     }
-    const config_hgts = {
+    const config_hgts: ChartConfiguration = {
         type: 'line',
         data: data_hgts,
         options: options_hgts
     };
-    return new Chart(document.getElementById(canvasID), config_hgts);
+    return new Chart(<HTMLCanvasElement>document.getElementById(canvasID), config_hgts);
 }

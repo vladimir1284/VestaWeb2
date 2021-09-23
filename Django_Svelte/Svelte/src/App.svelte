@@ -1,6 +1,6 @@
-<script>
+<script lang="ts">
 	import Map from "./Map.svelte";
-  import { base_url} from './store.js'  
+  import { base_url} from './store'  
   import { setupI18n } from './services/i18n';
 
   setupI18n({ withLocale: 'es' });

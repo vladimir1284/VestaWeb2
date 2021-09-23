@@ -1,10 +1,10 @@
 <script>
     import { onMount } from 'svelte';
     import { Col, Container, Row } from 'sveltestrap';
-    import {getHeightsChart} from './heights.js'
-    import {getHailChart} from './hail.js'
-    import {getVilChart} from './vil_dbzm.js'
-    import {drawAzran} from './azran.js'
+    import {getHeightsChart} from './heights'
+    import {getHailChart} from './hail'
+    import {getVilChart} from './vil_dbzm'
+    import {drawAzran} from './azran'
     var { DateTime } = require('luxon');
     import { _ } from '../../services/i18n';
     import {storm_times, current_datetime} from '../../store'

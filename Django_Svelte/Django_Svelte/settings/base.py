@@ -29,7 +29,7 @@ INSTALLED_APPS = [
     # This project
     # 'website',
     'vestaweb',
-    'corsheaders', # Just for develoment
+    'corsheaders', # Just for development
 
     # # CodeRed CMS
     # 'coderedcms',

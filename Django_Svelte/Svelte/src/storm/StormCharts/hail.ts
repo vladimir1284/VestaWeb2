@@ -1,4 +1,5 @@
 import Chart from 'chart.js/auto'
+import type {ChartConfiguration} from 'chart.js/types/index.esm'
 
 /* Filtering probability of hail data
 A value of -999 indicates that these cells are beyond the maximum range for algorithm
@@ -53,10 +54,10 @@ export function getHailChart(canvasID, storm, labels, text){
             }
         }
     }
-    const config_hail = {
+    const config_hail: ChartConfiguration = {
     type: 'line',
     data: data_hail,
     options: options_hail
     };
-    return new Chart(document.getElementById(canvasID), config_hail)
+    return new Chart(<HTMLCanvasElement>document.getElementById(canvasID), config_hail)
 }

@@ -7,6 +7,9 @@ name = "pypi"
 coderedcms = "*"
 psycopg2-binary = "*"
 django = "*"
+django-cors-headers = "*"
+numpy = "*"
+python-dateutil = "*"
 
 [requires]
 python_version = "3.6"

@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from .models import *
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.core.exceptions import ObjectDoesNotExist
 import pytz
+from dateutil import parser
 import numpy as np
 
 # Retrieve the latest raster product
@@ -114,9 +115,15 @@ def get_palette(request, palette_name):
 
 # Retrieve available products
 def get_available(request, radar, dt):
+    # Create time windows of 15min
+    still_active = parser.parse(dt) - timedelta(minutes=15)
+
     radar = Radar.objects.get(radar_code = radar)
-    products = RasterProduct.objects.filter(radar=radar, created=dt)
-    available_products = [product.description.pcode for product in products]
+    products = RasterProduct.objects.filter(radar=radar, created__range=[still_active, dt])
+    available_products = []
+    for product in products:
+        if product.description.pcode not in available_products:
+            available_products.append(product.description.pcode)
     return JsonResponse({'available_products': available_products,
                          'radar': radar.radar_code,
                          'datetime': dt})

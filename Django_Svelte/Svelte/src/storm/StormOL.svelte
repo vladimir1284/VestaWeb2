@@ -63,8 +63,9 @@
   afterUpdate(refreshOverlays)
 </script>
 
-{#if $storms}
-  {#each $storms as storm}
+
+{#each $storms as storm}
+  {#if storm.id}
     <div id={"storm-" + storm.id + get(current_datetime).ts} style={storm.settings.visible?'visibility:visible':'visibility:hidden'}>
       <button class="storm" id={"btn-" + storm.id + get(current_datetime).ts} 
               style={getIconSize(storm)}
@@ -76,8 +77,9 @@
         <Tooltip target={"btn-" + storm.id + get(current_datetime).ts} placement='top'>{storm.id}</Tooltip>
       {/if}
     </div>
-  {/each}
-{/if}
+  {/if}
+{/each}
+
 
 <style>
   .storm {
