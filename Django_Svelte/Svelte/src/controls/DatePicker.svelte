@@ -20,7 +20,6 @@
 	
     let internal
     function input(x){
-        // console.log(x.setZone('local').toFormat("y-MM-dd'T'HH:mm"))
         internal = x.setZone('local').toFormat("y-MM-dd'T'HH:mm")
     }
     

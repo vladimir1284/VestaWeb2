@@ -10,12 +10,12 @@
         color,
         title,
         tickSize = 3,
-        width = 480,
+        width = 300,
         height = 24 + tickSize,
         marginTop = 0,
-        marginRight = -20,
+        marginRight = 0,
         marginBottom = 10 + tickSize,
-        marginLeft = -20,
+        marginLeft = 0,
         ticks = width / 64,
         tickFormat,
         tickValues
@@ -255,8 +255,10 @@
         padding-top: 1px;
         margin-left: -20px;
         margin-right: -20px;
+        max-width: 320px;
     }	
 	#unit {
+        height: 27px;
         color: white;
         font-size: 14;
         padding-top: 11;

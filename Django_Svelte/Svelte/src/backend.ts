@@ -1,241 +1,225 @@
-import {current_datetime, radars, currentRadar, currentProduct, 
-        baseAPI, availableProducts, storms, storm_times} from './store'
-import type {Storm} from './store'
-import {get} from 'svelte/store'
+import {
+    current_datetime, radars, currentRadar, currentProduct,
+    baseAPI, availableProducts, storms, storm_times
+} from './store';
+import type { Storm } from './store';
+import { get } from 'svelte/store';
 import { DateTime } from 'luxon';
 
-async function init(){
-    await getRadars()
-    await getLastProduct()
-
-    const ap = await getAvailableProducts()
-    const ap_promises = []
-    for(let i = 0; i < ap.length; i++){
-        const product = await getProductDescription(ap[i])
-        ap_promises.push(product)
+/*
+ * Initialization function retreiving all the necessary data from backend
+ * on page loading.
+ */
+async function init() {
+    await getRadars();
+    await getLastProduct();
+    const ap = await getAvailableProducts();
+    const ap_promises = [];
+    for (let i = 0; i < ap.length; i++) {
+        const product = await getProductDescription(ap[i]);
+        ap_promises.push(product);
     }
-    const ap_array = await Promise.all(ap_promises)
-    availableProducts.set(ap_array)
-    currentProduct.set(ap_array[0])
+    const ap_array = await Promise.all(ap_promises);
+    availableProducts.set(ap_array);
+    currentProduct.set(ap_array[0]);
 
-    await getStorms()
-    return true
+    await getStorms();
+    return true;
 }
 
-async function getAvailableProducts(){
-    const apiURL = baseAPI + get(currentRadar).id + '/available/' + 
-                    get(current_datetime).setZone('UTC').toFormat("y-MM-dd'T'HH:mm:ss'Z'")
-    const res = await fetch(apiURL)
-    if (!res.ok) throw new Error('Bad response from: ' + apiURL)
-    const items = await res.json()
-    return items.available_products
+/*
+ * Get avaliable products for the current radar and datetime.
+ * Products not older than 15min are considered 
+ * (time window handled in the backend).
+ */
+async function getAvailableProducts() {
+    const apiURL = baseAPI + get(currentRadar).id + '/available/' +
+        get(current_datetime).setZone('UTC').toFormat("y-MM-dd'T'HH:mm:ss'Z'");
+    const res = await fetch(apiURL);
+    if (!res.ok) throw new Error('Bad response from: ' + apiURL);
+    const items = await res.json();
+    return items.available_products;
 }
 
-async function getProductDescription(pcode){
-    const apiURL = baseAPI + 'description/' + pcode
-    const res = await fetch(apiURL)
-    if (!res.ok) throw new Error('Bad response from: ' + apiURL)
-    const items = await res.json()
-    return items.description
+// Product description type
+export interface Description {
+    id: string;
+    range: number;
+    palette: {
+        colors: string[];
+        min: number;
+        max: number;
+        unit: string;
+        tickValues: number[]
+    }
+}
+/*
+ * Retrieve the product description form the backend
+ * @param {string}  pcode - product id as defined in CODE.
+ * @return {Description} Product description
+ */
+async function getProductDescription(pcode) {
+    const apiURL = baseAPI + 'description/' + pcode;
+    const res = await fetch(apiURL);
+    if (!res.ok) throw new Error('Bad response from: ' + apiURL);
+    const items = await res.json();
+    return items.description;
 }
 
-async function getRadars(){
-    const apiURL = baseAPI + 'get_radars'
-    const res = await fetch(apiURL)
-    if (!res.ok) throw new Error('Bad response from: ' + apiURL)
-    const items = await res.json()
-    radars.set(items.radars)
-    return currentRadar.set(items.radars["CPSJ"]) // TODO this will be MOSAIC     
+/*
+ * Get radars from the database and set the default radar for 
+ * the initial page loading
+ */
+async function getRadars() {
+    const apiURL = baseAPI + 'get_radars';
+    const res = await fetch(apiURL);
+    if (!res.ok) throw new Error('Bad response from: ' + apiURL);
+    const items = await res.json();
+    radars.set(items.radars);
+    return currentRadar.set(items.radars["CPSJ"]); // TODO this will be MOSAIC     
 }
 
-async function getLastProduct(){
-    const apiURL = baseAPI + get(currentRadar).id +  '/last'
-    const res = await fetch(apiURL)
-    if (!res.ok) throw new Error('Bad response from: ' + apiURL)
-    const items = await res.json()
-    return current_datetime.set(DateTime.fromISO(items.datetime))
+/*
+ * Get the latest product for current radar. 
+ * It also sets the current datetime as the datetime of the selected product.
+ */
+async function getLastProduct() {
+    const apiURL = baseAPI + get(currentRadar).id + '/last';
+    const res = await fetch(apiURL);
+    if (!res.ok) throw new Error('Bad response from: ' + apiURL);
+    const items = await res.json();
+    return current_datetime.set(DateTime.fromISO(items.datetime));
 }
 
-async function getVWParray(nframes = 8, dt = get(current_datetime), step = 1){
-    const apiURL = baseAPI + get(currentRadar).id +  '/vwp_array/'+ 
-                    dt.setZone('UTC').toFormat("y-MM-dd'T'HH:mm:ss'Z'") +
-                    '/'+ nframes +'/' + step
-    const res = await fetch(apiURL)
-    if (!res.ok) throw new Error('Bad response from: ' + apiURL)
-    const items = await res.json() 
-    return items.vwp
+// VWP graphic data for one observation
+export interface VWPelement {
+    datetime: string;
+    data: {
+        ht: number;
+        vel: number;
+        dir: number;
+        rms: number;
+    }[]
 }
 
-async function getVWP(dt = get(current_datetime)){
-    const apiURL = baseAPI + get(currentRadar).id +  '/vwp/'+ 
-                    dt.setZone('UTC').toFormat("y-MM-dd'T'HH:mm:ss'Z'")
-    const res = await fetch(apiURL)
-    if (!res.ok) throw new Error('Bad response from: ' + apiURL)
-    const items = await res.json() 
-    return items.vwp
+/*
+ * Retrieve graphic data from several VWP products.
+ *  @param {number}     nframes - Number of products to be retrieved (8 by default)
+ *  @param {DateTime}   dt      - Datetime of the most recent desired product 
+ *                                (current_datetime by default).
+ *  @param {number}     step    - Number of observations between two consecutive VPW 
+ *                                products to be retrieved. 
+ *                                (Default should be 6h approximately).
+ *  @return {VWPelement[]} Array of VWP data.
+ */
+async function getVWParray(nframes = 8, dt = get(current_datetime), step = 1) { //TODO step = 24
+    const apiURL = baseAPI + get(currentRadar).id + '/vwp_array/' +
+        dt.setZone('UTC').toFormat("y-MM-dd'T'HH:mm:ss'Z'") +
+        '/' + nframes + '/' + step;
+    const res = await fetch(apiURL);
+    if (!res.ok) throw new Error('Bad response from: ' + apiURL);
+    const items = await res.json();
+    return <VWPelement[]>items.vwp;
 }
 
-async function getStorms(){
-    const apiURL = baseAPI + get(currentRadar).id +  '/storm_cells/20/'+ 
-                    get(current_datetime).setZone('UTC').toFormat("y-MM-dd'T'HH:mm:ss'Z'")
-    const res = await fetch(apiURL)
-    if (!res.ok) throw new Error('Bad response from: ' + apiURL)
-    const items = await res.json()
-    const storm_list = items.storm_cells
-    storm_list.forEach(storm => {
+// VWP tabular data for one observation
+export interface VWPdata {
+    ht: number[];
+    u: number[];
+    v: number[];
+    w: number[];
+    dir: number[];
+    rms: number[];
+    div: number[];
+    srng: number[];
+    elev: number[];
+}
+
+/*
+ * Retrieve the tabular data from a VWP product.
+ *  @param {DateTime}   dt      - Datetime of the most recent desired product 
+ *                                (current_datetime by default).
+ *  @return {VWPdata} VWP tabular data.
+ */
+async function getVWP(dt = get(current_datetime)) {
+    const apiURL = baseAPI + get(currentRadar).id + '/vwp/' +
+        dt.setZone('UTC').toFormat("y-MM-dd'T'HH:mm:ss'Z'");
+    const res = await fetch(apiURL);
+    if (!res.ok) throw new Error('Bad response from: ' + apiURL);
+    const items = await res.json();
+    return items.vwp;
+}
+
+/*
+ * Retrieve storm cells for the given radar and datetime.
+ *  @param {number} nstorms - Maximum number of cells to be retrieved (20 by default)
+ */
+async function getStorms(nstorms: number = 20) {
+    const apiURL = baseAPI + get(currentRadar).id + '/storm_cells/'+ nstorms +'/' +
+        get(current_datetime).setZone('UTC').toFormat("y-MM-dd'T'HH:mm:ss'Z'");
+    const res = await fetch(apiURL);
+    if (!res.ok) throw new Error('Bad response from: ' + apiURL);
+    const items = await res.json();
+    const storm_list = items.storm_cells;
+    storm_list.forEach((storm: Storm) => {
         // Initialize storm settings
-        storm.settings = {'future': false,
-                            'past': false,
-                            'visible': true}        
+        storm.settings = {
+            'future': false,
+            'past': false,
+            'visible': true
+        }
     });
-    storm_times.set(items.times)
-    return storms.set(storm_list)
+    storm_times.set(items.times);
+    return storms.set(storm_list);
 }
 
-async function getConsecutiveProduct(fcode){
+/*
+ * Retrieve the next or the previous product from the current datetime.
+ *  @param {"next"|"previous"} fcode - Whether next or previous observation.
+ *  @return {DateTime} Datetime of the retrieved product.
+ */
+async function getConsecutiveProduct(fcode: "next"|"previous") {
     // Request the closest product 
-    const apiURL = baseAPI + get(currentRadar).id + '/' + 
-    get(currentProduct).id + '/' + fcode + '/' + 
-    get(current_datetime).setZone('UTC').toFormat("y-MM-dd'T'HH:mm:ss'Z'")
-    const res = await fetch(apiURL)
-    if (!res.ok) throw new Error('Bad response from: ' + apiURL)
-    const items = await res.json()
-    return items.product.datetime
+    const apiURL = baseAPI + get(currentRadar).id + '/' +
+        get(currentProduct).id + '/' + fcode + '/' +
+        get(current_datetime).setZone('UTC').toFormat("y-MM-dd'T'HH:mm:ss'Z'");
+    const res = await fetch(apiURL);
+    if (!res.ok) throw new Error('Bad response from: ' + apiURL);
+    const items = await res.json();
+    return items.product.datetime;
 }
 
-async function getClosestProduct(dt){
+/*
+ * Retrieve the next or the previous product from the current datetime.
+ *  @param {DateTime} dt - Datetime selected by the user.
+ *  @return {DateTime} Datetime of the retrieved product.
+ */
+async function getClosestProduct(dt) {
     // Request the closest product 
-    const apiURL = baseAPI + get(currentRadar).id + '/' + 
-    get(currentProduct).id + '/closest/' + 
-    dt.setZone('UTC').toFormat("y-MM-dd'T'HH:mm:ss'Z'")
-    const res = await fetch(apiURL)
-    if (!res.ok) throw new Error('Bad response from: ' + apiURL)
-    const items = await res.json()
-    if (typeof(items.product)!="undefined"){
-        return items.product.datetime
+    const apiURL = baseAPI + get(currentRadar).id + '/' +
+        get(currentProduct).id + '/closest/' +
+        dt.setZone('UTC').toFormat("y-MM-dd'T'HH:mm:ss'Z'");
+    const res = await fetch(apiURL);
+    if (!res.ok) throw new Error('Bad response from: ' + apiURL);
+    const items = await res.json();
+    if (typeof (items.product) !== "undefined") {
+        return items.product.datetime;
     } else {
-        return "1970-01-01T00:00:00Z"
+        return "1970-01-01T00:00:00Z";
     }
 }
 
-async function getDatetimeList(nframes){    
+async function getDatetimeList(nframes) {
     // Request the list of datetimes 
-    const apiURL = baseAPI + get(currentRadar).id + '/' + 
-                    get(currentProduct).id + '/' + 
-                    get(current_datetime).setZone('UTC').toFormat("y-MM-dd'T'HH:mm:ss'Z'") +
-                    '/' + nframes
-    const res = await fetch(apiURL)
-    if (!res.ok) throw new Error('Bad response from: ' + apiURL)
-    const items = await res.json()
-    return items.product_array
+    const apiURL = baseAPI + get(currentRadar).id + '/' +
+        get(currentProduct).id + '/' +
+        get(current_datetime).setZone('UTC').toFormat("y-MM-dd'T'HH:mm:ss'Z'") +
+        '/' + nframes;
+    const res = await fetch(apiURL);
+    if (!res.ok) throw new Error('Bad response from: ' + apiURL);
+    const items = await res.json();
+    return items.product_array;
 }
 
-export { getDatetimeList, getClosestProduct, getConsecutiveProduct, getStorms, init, getVWP, getVWParray }
-
-// export { _getDatetimeList as getDatetimeList, 
-//         _getClosestProduct as getClosestProduct, 
-//         _getConsecutiveProduct as getConsecutiveProduct, 
-//         _getStorms as getStorms, 
-//         _init as init }
-
-// ====================================== For DEMO =============================================
-
-// import {availableProducts as _availableProducts} from "./db/products"
-// import {radars as _radars} from "./db/radars"
-// import {ss} from "./db/storms"
-
-// const product_array = ["1993-03-13T10:48:00Z",
-//                         "1993-03-13T10:43:00Z",
-//                         "1993-03-13T10:38:00Z",
-//                         "1993-03-13T10:33:00Z",
-//                         "1993-03-13T10:28:00Z",
-//                         "1993-03-13T10:22:00Z",
-//                         "1993-03-13T10:17:00Z",
-//                         "1993-03-13T10:12:00Z",
-//                         "1993-03-13T10:07:00Z",
-//                         "1993-03-13T10:02:00Z",
-//                         "1993-03-13T09:36:00Z",
-//                         "1993-03-13T09:31:00Z",
-//                         "1993-03-13T09:26:00Z"]
-
-// function getDatetime(dt){
-//     let index = -1
-//     product_array.forEach(function(datetime, i){
-//         if (dt === datetime){
-//             index = i
-//         }
-//     })
-//     return index
-// }
-
-// function _init(){
-//     _getRadars()
-//     _getLastProduct()
-
-//     availableProducts.set(_availableProducts)
-//     currentProduct.set(_availableProducts[0])
-
-//     _getStorms()
-//     return true
-// }
-
-
-// function _getRadars(){
-//     radars.set(_radars)
-//     return currentRadar.set(_radars["CCMW"]) // TODO this will be MOSAIC     
-// }
-
-// function _getLastProduct(){
-//     return current_datetime.set(DateTime.fromISO("1993-03-13T10:48:00Z"))
-// }
-
-// function _getStorms(){
-//     const storm_list = Object.values(
-//         ss[get(current_datetime).setZone('UTC')
-//         .toFormat("y-MM-dd'T'HH:mm:ss'Z'")].storm_cells)
-
-//     storm_list.forEach((storm: Storm) => {
-//         // Initialize storm settings
-//         storm.settings = {'future': false,
-//                             'past': false,
-//                             'visible': true}        
-//     });
-//     return storms.set(storm_list)
-// }
-
-// function _getConsecutiveProduct(fcode){
-// // Request the closest product 
-// const index = getDatetime(get(current_datetime).setZone('UTC')
-//             .toFormat("y-MM-dd'T'HH:mm:ss'Z'"))
-// const delta = (fcode != 'next')? 1:-1
-// return product_array[index + delta]
-// }
-
-// function _getClosestProduct(dt){
-//     let delta = 1e18 // Large number
-//     let index = -1
-//     // Find the shortest difference in seconds
-//     product_array.forEach(function(datetime, i){
-//         const dt_i = DateTime.fromISO(datetime)
-//         const delta_i = Math.abs(dt_i.toSeconds() - dt.toSeconds())
-//         if (delta_i < delta){
-//             index = i
-//             delta = delta_i
-//         }
-//     })
-//     return product_array[index]
-// }
-
-// function _getDatetimeList(nframes){    
-//     let tl = []
-//     let index = getDatetime(get(current_datetime).setZone('UTC')
-//                 .toFormat("y-MM-dd'T'HH:mm:ss'Z'"))
-                
-//     for(let i = 0; i < nframes; i++){
-//         if (index > product_array.length - 1){
-//             break
-//         }
-//         tl.push({"datetime": product_array[index++]})
-//     }
-//     return tl
-// }
+export { getDatetimeList, getClosestProduct, getConsecutiveProduct, getStorms, init, 
+        getVWP, getVWParray, getAvailableProducts, getProductDescription}

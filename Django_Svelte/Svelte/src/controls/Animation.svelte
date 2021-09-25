@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import {
         Button,
         Input,
@@ -12,118 +12,117 @@
     import StopCircleOutline from "svelte-material-icons/StopCircleOutline.svelte";
     import { _ } from "../services/i18n";
     import { get } from "svelte/store";
-    import { current_datetime, layers } from "../store"
-    import {createProductSource} from "../Layers"
-    import {updateStormSettings} from "../storm/storms"
-    import { getStorms, getConsecutiveProduct, getDatetimeList } from "../backend"
-
-    var { DateTime } = require('luxon');
+    import { current_datetime, layers } from "../store";
+    import {createProductSource} from "../Layers";
+    import {updateStormSettings} from "../storm/storms";
+    import { getStorms, getConsecutiveProduct, getDatetimeList } from "../backend";
+    import { DateTime } from 'luxon';
 
     // Animation handle
-    let playing = false
-    let stopped = true
-    let play_interval
-    let datetime_array
-    let initial_datetime
-    let source_array
-    let current_frame
-    const delay = 1000 // ms
+    let playing = false;
+    let stopped = true;
+    let play_interval;
+    let datetime_array;
+    let initial_datetime;
+    let source_array;
+    let current_frame;
+    const delay = 1000; // ms
 
     // Frames configuration
-    const minNframes = 4
-    const maxNframes = 20
-    const defaultNframes = 6
-    let nframes = defaultNframes
+    const minNframes = 4;
+    const maxNframes = 20;
+    const defaultNframes = 6;
+    let nframes: string | number = defaultNframes;
 
     // Setup the animation 
     async function startAnimation(){
         current_frame = 0
         const product_array = await getDatetimeList(nframes)
         if (product_array.length > 1) {
-            datetime_array = [] // init
-            source_array = []
+            datetime_array = []; // init
+            source_array = [];
             product_array.slice().reverse()
-                .forEach(function (item, index) {
-                datetime_array.push(DateTime.fromISO(item.datetime))
+                .forEach(function (item) {
+                datetime_array.push(DateTime.fromISO(item.datetime));
             })
             // Start animation
-            stopped = false
-            play()
+            stopped = false;
+            play();
         } else {
-            alert($_("Animation.not_enough"))
+            alert($_("Animation.not_enough"));
         }
     }
 
     // Stop the animation. Next start requires setup.
     function terminateAnimation(){
-        stopped = true
-        stop()
-        source_array = []
+        stopped = true;
+        stop();
+        source_array = [];
     }
 
     // Update datetime while playing
     function animate(){
-        current_datetime.set(datetime_array[current_frame])
+        current_datetime.set(datetime_array[current_frame]);
         // Store sources to save network trafic
         if (source_array.length < (current_frame + 1)){
-            source_array.push(createProductSource())
+            source_array.push(createProductSource());
         }
-        get(layers).product.setSource(source_array[current_frame])
-        current_frame = (current_frame + 1) % datetime_array.length // rotate
+        get(layers).product.setSource(source_array[current_frame]);
+        current_frame = (current_frame + 1) % datetime_array.length; // rotate
     }
 
     function play_pause(){
         if (stopped){ // prepare animation
-            startAnimation()
+            startAnimation();
         } else {
             if (playing){ // pause animation
-                stop()
+                stop();
             } else { // restart animation
-                play()
+                play();
             }
         }
     }
 
     function stop(){
-        clearInterval(play_interval)
-        playing = false
-        if (initial_datetime != get(current_datetime)){
-            getStorms()
+        clearInterval(play_interval);
+        playing = false;
+        if (initial_datetime !== get(current_datetime)){
+            getStorms();
         } else {
-            updateStormSettings('visible', true)
+            updateStormSettings('visible', true);
         }
     }
 
     function play(){
-        initial_datetime = get(current_datetime)
-        updateStormSettings('visible', false)
-        play_interval = setInterval(animate, delay)
-        playing = true
+        initial_datetime = get(current_datetime);
+        updateStormSettings('visible', false);
+        play_interval = setInterval(animate, delay);
+        playing = true;
     }
 
     function next(){
-        changeObservation('next')
+        changeObservation('next');
     }
 
     function previous(){
-        changeObservation('previous')
+        changeObservation('previous');
     }
 
-    async function changeObservation(fcode){
-        const datetime = await getConsecutiveProduct(fcode)
-        if (typeof(datetime)!="undefined"){
-            current_datetime.set(DateTime.fromISO(datetime))
-            get(layers).product.setSource(createProductSource())
-            getStorms()
+    async function changeObservation(fcode: "next"|"previous"){
+        const datetime = await getConsecutiveProduct(fcode);
+        if (typeof(datetime)!=="undefined"){
+            current_datetime.set(DateTime.fromISO(datetime));
+            get(layers).product.setSource(createProductSource());
+            getStorms();
         } else {
             alert($_("Animation.no_product")[fcode] +
-                    get(current_datetime).setZone('local').toFormat('dd/MMM/y HH:mma'))
+                    get(current_datetime).setZone('local').toFormat('dd/MMM/y HH:mma'));
         }
     }
 
     $:{
-        nframes = (nframes < minNframes)?minNframes:nframes
-        nframes = (nframes > maxNframes)?maxNframes:nframes
+        nframes = (nframes < minNframes)?minNframes:nframes;
+        nframes = (nframes > maxNframes)?maxNframes:nframes;
     }
 
 </script>
@@ -198,7 +197,7 @@
     size="40px"
     min=4
     max=20
-    placeholder={nframes} />
+    placeholder={""+nframes} />
 </Popover>
 
 <style>

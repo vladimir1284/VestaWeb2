@@ -3,12 +3,13 @@ import { getCenter } from 'ol/extent';
 import { writable } from 'svelte/store';
 import type {Layer} from 'ol/layer';
 import { DateTime } from 'luxon';
+import type Map from "ol/Map";
 
 export const base_url = 'imgs/'
 
 export const baseAPI = "http://localhost:8000/vestaweb/"
 
-export const current_datetime = writable(DateTime.utc())
+export const current_datetime = writable(<DateTime> DateTime.utc())
 
 export interface Storm {id: string;
                         azimut: number;
@@ -35,7 +36,7 @@ export interface Storm {id: string;
 export const storms = writable([<Storm>{}])
 export const storm_times = writable()
 
-export const map = writable()
+export const map = writable(<Map>{})
 
 export interface Radar {id: string;
                         name: string; 

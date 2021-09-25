@@ -240,11 +240,11 @@ def getProductDescription(request, pcode):
     return JsonResponse({'description': description})
     
   
-# Retrieve storm cells
+# Retrieve VWP data
 def get_vwp(request, radar, dt):    
     radar = Radar.objects.get(radar_code = radar)
 
-    # Information of SS_62 product related to storm structure
+    # Information of VWP 48 product
     try:
         vwp = VWP.objects.get(radar=radar, created=dt)
         vwp_data = []
@@ -266,33 +266,6 @@ def get_vwp(request, radar, dt):
                          'radar': radar.radar_code,
                          'datetime': dt})  
     
-  
-# # Retrieve VWP data
-# def get_vwp(request, radar, dt):    
-#     radar = Radar.objects.get(radar_code = radar)
-#
-#     # Information of SS_62 product related to storm structure
-#     try:
-#         vwp = VWP.objects.get(radar=radar, created=dt)
-#         vwp_data = []
-#         for i in range(len(vwp.hts)):
-#             vwp_data.append({
-#                 'ht':  vwp.hts[i],
-#                 'u':    vwp.u[i], 
-#                 'v':    vwp.v[i],
-#                 'w':    vwp.w[i],
-#                 'dir':    vwp.dir[i],
-#                 'rms':  vwp.rms[i],
-#                 'div':  vwp.div[i],
-#                 'srng': vwp.srng[i],
-#                 'elev': vwp.elev[i]
-#             })
-#     except ObjectDoesNotExist:
-#         vwp_data = {}
-#     return JsonResponse({'vwp': vwp_data,
-#                          'radar': radar.radar_code,
-#                          'datetime': dt})  
-#
 
    
 # Retrieve VWP data array

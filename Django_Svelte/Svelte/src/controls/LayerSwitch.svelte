@@ -34,7 +34,7 @@
   // update product on radio button switch
   $: {
     const layers_array = $layers
-    if (typeof(layers_array.product)!="undefined"){      
+    if (typeof(layers_array.product)!=="undefined"){      
       // Update Label
       try {        
       pLabel = $_('LayerSwitch.pname')[selectedProduct.id]
@@ -43,7 +43,7 @@
       }
       currentProduct.set(selectedProduct)
       layers_array.product.setSource(createProductSource())   
-      if (selectedProduct.range != range){
+      if (selectedProduct.range !== range){
         // Update cover when needed
         layers_array.cover.setSource(createCoverSource(selectedProduct))
         range = selectedProduct.range
@@ -54,7 +54,7 @@
   // Modify cover layer visibility
   $: {
     const layers_array = get(layers)
-    if (typeof(layers_array.cover)!="undefined"){
+    if (typeof(layers_array.cover)!=="undefined"){
       layers_array.cover.setVisible(showCover);
       // console.log(`Cover: ${showCover}`)
     }
@@ -63,7 +63,7 @@
   // Control base layer
   $: {
     const layers_array = get(layers)
-    if (typeof(layers_array.orography)!="undefined"){
+    if (typeof(layers_array.orography)!=="undefined"){
       layers_array.orography.setVisible(false)
       layers_array.osm.setVisible(false)
       layers_array[baseLayer].setVisible(true)
@@ -75,7 +75,7 @@
   // Control Porduct layer opacity
   $: {
     const layers_array = get(layers)
-    if (typeof(layers_array.product)!="undefined"){
+    if (typeof(layers_array.product)!=="undefined"){
       layers_array.product.setOpacity(productOpacity);
     }
   }

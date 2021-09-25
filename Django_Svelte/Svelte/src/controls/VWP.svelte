@@ -8,7 +8,7 @@
     import { _ } from "../services/i18n";
     import VwPmodal from "../wind/VWPmodal.svelte";
     let isOpen = false
-    // ($currentRadar.vwp != "undefined")}
+    // ($currentRadar.vwp !== "undefined")}
 
   function showVWP(){
     isOpen = true
