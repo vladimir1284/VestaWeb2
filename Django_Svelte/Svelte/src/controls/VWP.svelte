@@ -16,8 +16,9 @@
 </script>
 
 <Button on:click={showVWP} id="vpw_btn" style="width: auto; padding-left: .2em; padding-right: .2em;">
-    <WeatherWindy color="white" size="1em" />
+    <WeatherWindy color="black" size="1em" />
 </Button>
+<div class="control-label">Perfil Vertical</div>
 
 <VwPmodal bind:isOpen={isOpen}/>
 

@@ -2,32 +2,44 @@ import {
     current_datetime, radars, currentRadar, currentProduct,
     baseAPI, availableProducts, storms, storm_times
 } from './store';
-import type { Storm } from './store';
+import type { Storm, Palette } from './store';
 import { get } from 'svelte/store';
 import { DateTime } from 'luxon';
 
-/*
+/**
  * Initialization function retreiving all the necessary data from backend
  * on page loading.
  */
 async function init() {
     await getRadars();
+
+    // Get the most recent product
     await getLastProduct();
+
+    /**
+     * Get the available products for the datetime of the 
+     * most recent product in the initial radar (Should 
+     * be MOSAIC)
+     */
     const ap = await getAvailableProducts();
     const ap_promises = [];
+
+    // Get the description of available products
     for (let i = 0; i < ap.length; i++) {
         const product = await getProductDescription(ap[i]);
         ap_promises.push(product);
     }
     const ap_array = await Promise.all(ap_promises);
     availableProducts.set(ap_array);
+
+    // Set the initial current product
     currentProduct.set(ap_array[0]);
 
     await getStorms();
     return true;
 }
 
-/*
+/**
  * Get avaliable products for the current radar and datetime.
  * Products not older than 15min are considered 
  * (time window handled in the backend).
@@ -41,19 +53,16 @@ async function getAvailableProducts() {
     return items.available_products;
 }
 
-// Product description type
+
+/**
+ * Product description type
+ */ 
 export interface Description {
     id: string;
     range: number;
-    palette: {
-        colors: string[];
-        min: number;
-        max: number;
-        unit: string;
-        tickValues: number[]
-    }
+    palette: Palette
 }
-/*
+/**
  * Retrieve the product description form the backend
  * @param {string}  pcode - product id as defined in CODE.
  * @return {Description} Product description
@@ -66,7 +75,7 @@ async function getProductDescription(pcode) {
     return items.description;
 }
 
-/*
+/**
  * Get radars from the database and set the default radar for 
  * the initial page loading
  */
@@ -79,7 +88,7 @@ async function getRadars() {
     return currentRadar.set(items.radars["CPSJ"]); // TODO this will be MOSAIC     
 }
 
-/*
+/**
  * Get the latest product for current radar. 
  * It also sets the current datetime as the datetime of the selected product.
  */
@@ -102,7 +111,7 @@ export interface VWPelement {
     }[]
 }
 
-/*
+/**
  * Retrieve graphic data from several VWP products.
  *  @param {number}     nframes - Number of products to be retrieved (8 by default)
  *  @param {DateTime}   dt      - Datetime of the most recent desired product 
@@ -135,7 +144,7 @@ export interface VWPdata {
     elev: number[];
 }
 
-/*
+/**
  * Retrieve the tabular data from a VWP product.
  *  @param {DateTime}   dt      - Datetime of the most recent desired product 
  *                                (current_datetime by default).
@@ -150,7 +159,7 @@ async function getVWP(dt = get(current_datetime)) {
     return items.vwp;
 }
 
-/*
+/**
  * Retrieve storm cells for the given radar and datetime.
  *  @param {number} nstorms - Maximum number of cells to be retrieved (20 by default)
  */
@@ -173,7 +182,7 @@ async function getStorms(nstorms: number = 20) {
     return storms.set(storm_list);
 }
 
-/*
+/**
  * Retrieve the next or the previous product from the current datetime.
  *  @param {"next"|"previous"} fcode - Whether next or previous observation.
  *  @return {DateTime} Datetime of the retrieved product.
@@ -189,7 +198,7 @@ async function getConsecutiveProduct(fcode: "next"|"previous") {
     return items.product.datetime;
 }
 
-/*
+/**
  * Retrieve the next or the previous product from the current datetime.
  *  @param {DateTime} dt - Datetime selected by the user.
  *  @return {DateTime} Datetime of the retrieved product.
@@ -209,6 +218,15 @@ async function getClosestProduct(dt) {
     }
 }
 
+// Product datetime object
+export interface ProductDateTime {
+    datetime: string;
+}
+/**
+ * Retrieve datetimes for the observations used in animation
+ * @param {number} nframes - number of frames to be retrived
+ * @returns {ProductDateTime[]} product_array - List with the product datetimes
+ */
 async function getDatetimeList(nframes) {
     // Request the list of datetimes 
     const apiURL = baseAPI + get(currentRadar).id + '/' +

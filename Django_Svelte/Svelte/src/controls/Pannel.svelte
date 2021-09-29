@@ -5,7 +5,7 @@
         const container = document.getElementById("pannel");
 
         let element = document.createElement("div");
-        element.id = "pannel_ctrl  ";
+        element.id = "pannel_ctrl";
         element.className = "ol-unselectable ol-control pannel_control";
         element.appendChild(container);
 
@@ -16,7 +16,6 @@
 <script>
     import { _ } from "../services/i18n";
     import LayerSwitch from './LayerSwitch.svelte'
-    import Animation from "./Animation.svelte";
     import DatePicker from "./DatePicker.svelte";
     import RadarSwitch from "./RadarSwitch.svelte";
     import VWP from "./VWP.svelte";
@@ -37,13 +36,6 @@
 </script>
 
 <div id="pannel">
-    <div>
-        <DatePicker/>
-    </div>
-
-    <div>
-        <Animation/>
-    </div>
 
     <div>
         <RadarSwitch/>
@@ -59,12 +51,9 @@
         <VWP/>
     </div>
 
+    <div>
+        <DatePicker/>
+    </div>
+
 </div>
 
-
-<style>
-    #pannel div {
-        float: left;
-        clear: none;
-    }
-</style>

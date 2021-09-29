@@ -15,7 +15,8 @@
     import StormTable from "./storm/StormTable.svelte";
     import Trends from "./storm/Trends.svelte";
     import { createLayers } from "./Layers";
-    import Legend, { legendController } from "./controls/Legend.svelte";
+    import ColorMap from "./controls/ColorMap.svelte";
+    import TimeLine from "./controls/TimeLine.svelte";
     import Logo, { logoController } from "./controls/Logo.svelte";
     import Pannel, { pannelController } from "./controls/Pannel.svelte";
     import { get } from "svelte/store";
@@ -73,10 +74,7 @@
             undefinedHTML: "",
         });
 
-        // Legend object
-        let legendControl = legendController();
-
-        // Legend object
+        // MAin pannel object
         let pannelControl = pannelController();
 
         // Logo
@@ -105,8 +103,6 @@
         const map = new Map({
             controls: defaults().extend([
                 mousePositionControl,
-                // LayerSwitchControl,
-                legendControl,
                 logoControl,
                 pannelControl,
             ]),
@@ -178,7 +174,12 @@
 
     <Pannel bind:showStormTable />
 
-    <Legend />
+    <div class="left_bottom_container">
+        <ColorMap />
+    </div>
+
+    <TimeLine/>
+
     <Logo />
 
     <Trends />
@@ -189,5 +190,13 @@
         height: 100%;
         position: fixed;
         top: 0;
+        z-index: -1;
+    }
+    .left_bottom_container {
+        z-index: 2;
+        bottom: 5px;
+        position: fixed;
+        left: 3px;
+        width: 300px;
     }
 </style>

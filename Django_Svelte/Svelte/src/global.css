@@ -2,21 +2,9 @@ body {
 	font: 14px "Century Gothic", Futura, sans-serif;
 	margin: 0px;
 }
-.pannel_control{
-	right: 50%;
-    margin-left: -50;
-    transform: translate(50%, 0);
-	top: 0em;
-}
 #interval{
 	font-size: 1em;
 	height: 1.6em;
-}
-.legend_control   {
-	left: 0px;
-	bottom: 0px;
-	user-select: none;
-	cursor: move;
 }
 div.logo_control   {
 	background-color: transparent;
@@ -29,7 +17,6 @@ div.ol-mouse-position{
 	padding: 5px 10px;
 	border-radius: 5px;
 	top:unset;
-	bottom: 15px;
 }
 
 .layer-header{
@@ -48,3 +35,72 @@ div.ol-mouse-position{
 .popover {
 	max-width: 300px;
 }
+
+/* ----------- Zoom Control -------- */
+.ol-control{
+	background-color: transparent !important;
+}
+.ol-control button{
+	color: black !important;
+	font-weight: normal !important;
+}
+/* --------------------------------- */
+
+/* ----------- Zoom Control -------- */
+.ol-zoom button[class|="ol-zoom"], .ol-zoom button[class|="ol-zoom"]:focus{
+	border-radius: 50%;
+	background-color: #fff3e1;
+	margin-top: 0.3em;
+}
+.ol-zoom button[class|="ol-zoom"]:hover{
+	background-color: #fce7c8;
+}
+/* --------------------------------- */
+
+/* ----------- Legend Control -------- */
+.legend_control   {
+	right: 5px;
+	bottom: 0px;
+	user-select: none;
+	cursor: move;
+	width: 300px;
+}
+/* --------------------------------- */
+
+/* ----------- Main Pannel Control -------- */
+#pannel_ctrl {
+	left: 0.7em;
+	top: 75px;
+	width: 25px;
+	padding: 0.5em 0 0 0 !important;
+	border-radius: 25px !important;
+	border-top-left-radius: 25px !important;
+	border-top-right-radius: 25px !important;
+	border-bottom-right-radius: 25px !important;
+	border-bottom-left-radius: 25px !important;
+	background-color: #fff3e1 !important;
+}
+.pannel_control button:focus{
+	box-shadow: none;
+} 
+.pannel_control button{
+	background-color: transparent !important;
+	padding: 0 0 0 0.1em !important;
+} 
+.control-label{
+	color: black;
+	transition: background-color .3s;
+	position: relative;
+	text-shadow: 0 0 4px #fff3e1;
+	line-height: 1.4;
+	padding-left: 11px;
+	padding-right: 11px;
+	margin-top: 1.5px;
+	left: 22px;
+    top: -1.5em;
+	border-radius: 1.2em;
+	display: table-cell;
+    vertical-align: middle;
+	white-space: nowrap;
+}
+/* --------------------------------- */

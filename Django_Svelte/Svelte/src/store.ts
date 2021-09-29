@@ -54,10 +54,23 @@ export interface LayerDict {orography: Layer;
                             trends: Layer}
 export const layers = writable(<LayerDict>{})
 
+
+/**
+ * Palette description type
+ */ 
+ export interface Palette {
+    colors: string[];
+    min: number;
+    max: number;
+    unit: string;
+    tickValues: number[]
+}
+
 export interface Product   {datetime: string;
-                            palette: string;
+                            palette: Palette;
                             id: string;
                             range: number}
+
 export const currentProduct = writable(<Product>{})
 
 export const availableProducts = writable([])

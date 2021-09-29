@@ -88,9 +88,9 @@
 
 
 <Button id="layer_switch_btn" style="width: auto; padding-right: .2em;">
-  <LayersOutline color="white" size="1.2em"/>
-  {pLabel}
-  </Button>
+  <LayersOutline color="black" size="1.2em"/>
+</Button>
+<div class="control-label">{pLabel}</div>
 
 <Popover placement="bottom" target="layer_switch_btn" bind:isOpen>
   <div slot="title">

@@ -10,6 +10,7 @@
     import { _ } from "../services/i18n";
     import { get } from 'svelte/store'
     import Close from 'svelte-material-icons/Close.svelte'
+    import History from 'svelte-material-icons/History.svelte'
     import {createProductSource} from "../Layers"
     import {getClosestProduct, getStorms} from "../backend"
 
@@ -52,13 +53,17 @@
 
     $: input($current_datetime)
 
+    // {$current_datetime.setZone('local').toFormat('dd/MMM/y HH:mma')}
+
 </script>
 
 <Button 
 id="datetime" 
 style="width: auto; padding-left: .2em; padding-right: .2em;">
-    {$current_datetime.setZone('local').toFormat('dd/MMM/y HH:mma')}
+    <History color="black" size="1em"/>
 </Button>
+
+<div class="control-label">{$current_datetime.setZone('local').toFormat('dd/MMM/y')}</div>
 
 <Popover placement="bottom" target="datetime" bind:isOpen>
     <InputGroup>

@@ -60,6 +60,7 @@ Product,
 <script lang="ts">
     import { Button, Input, Popover, Tooltip } from "sveltestrap";
     import { currentRadar, radars, layers, currentProduct } from "../store";
+    import RadarIcon from '../RadarIcon.svelte';
     import { _ } from "../services/i18n";
     let isOpen = false;
     // import { get } from 'svelte/store';
@@ -87,9 +88,9 @@ Product,
         id="radar"
         style="width: auto; padding-left: .2em; padding-right: .2em;"
     >
-        {$currentRadar.id}
+        <RadarIcon color="black" size="1em"/>
     </Button>
-
+    <div class="control-label">{$currentRadar.name}</div>
     <Popover placement="bottom" target="radar" bind:isOpen>
         <Input
             bind:value={$currentRadar.id}

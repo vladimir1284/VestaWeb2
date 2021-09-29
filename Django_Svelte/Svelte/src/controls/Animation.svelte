@@ -53,7 +53,10 @@
         }
     }
 
-    // Stop the animation. Next start requires setup.
+    /**
+     * Stop the animation. 
+     * Next start requires setup.
+     */
     function terminateAnimation(){
         stopped = true;
         stop();
@@ -108,6 +111,10 @@
         changeObservation('previous');
     }
 
+    /**
+     * Goes to the next or previuos observation if posible.
+     * @param {"next"|"previous"} fcode - Next or Previous
+     */
     async function changeObservation(fcode: "next"|"previous"){
         const datetime = await getConsecutiveProduct(fcode);
         if (typeof(datetime)!=="undefined"){
@@ -120,11 +127,13 @@
         }
     }
 
+    // TODO I cannot write 12 frames
     $:{
         nframes = (nframes < minNframes)?minNframes:nframes;
         nframes = (nframes > maxNframes)?maxNframes:nframes;
     }
-
+    
+    
 </script>
 
 <div id="animation">
