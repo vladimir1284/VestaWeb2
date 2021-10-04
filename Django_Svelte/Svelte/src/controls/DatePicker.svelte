@@ -6,7 +6,7 @@
         Popover,
         Tooltip,
     } from "sveltestrap";
-    import { current_datetime, layers } from "../store"
+    import { current_datetime, layers, finalTime } from "../store"
     import { _ } from "../services/i18n";
     import { get } from 'svelte/store'
     import Close from 'svelte-material-icons/Close.svelte'
@@ -45,7 +45,9 @@
                 alert(str_alert)
             }
             isOpen = false
+            // update both, the current datetime and the finalTime on user request
             current_datetime.set(cls)
+            finalTime.set(cdt);
             getStorms()
             get(layers).product.setSource(createProductSource())
         }

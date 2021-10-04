@@ -9,8 +9,22 @@ export const base_url = 'imgs/'
 
 export const baseAPI = "http://localhost:8000/vestaweb/"
 
-export const current_datetime = writable(<DateTime> DateTime.utc())
+/**
+ * Datetime associated to the current product
+ */
+export const current_datetime = writable(<DateTime> DateTime.utc());
 
+/**
+ * Datetime asociated to the most recent obs.
+ * It can be also a date in the past if it is manually
+ * requested by the user.
+ * It will always be the last value of the timeline controller.
+ */
+export const finalTime = writable(<DateTime> DateTime.utc());
+
+/**
+ * Data structure for storm cell data
+ */
 export interface Storm {id: string;
                         azimut: number;
                         range: number;
@@ -33,8 +47,18 @@ export interface Storm {id: string;
                                     past: boolean;
                                     visible: boolean}}
 
+
+/**
+ * Storm cells collection as a dictionary
+ * keys are storm ID.
+ */
 export const storms = writable([<Storm>{}])
-export const storm_times = writable()
+
+/**
+ * Time in minutes for the cell historical data.
+ * This is intended to be used in the Storm Cell Chart.
+ */
+export const storm_times = writable(<number[]>[])
 
 export const map = writable(<Map>{})
 

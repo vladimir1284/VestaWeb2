@@ -8,7 +8,6 @@
     import {
         current_datetime,
         availableProducts,
-Product,
     } from "../store";
     import type {Radar} from "../store";
     import { DateTime } from "luxon";

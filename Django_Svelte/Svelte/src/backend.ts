@@ -1,6 +1,6 @@
 import {
     current_datetime, radars, currentRadar, currentProduct,
-    baseAPI, availableProducts, storms, storm_times
+    baseAPI, availableProducts, storms, storm_times, finalTime
 } from './store';
 import type { Storm, Palette } from './store';
 import { get } from 'svelte/store';
@@ -97,7 +97,9 @@ async function getLastProduct() {
     const res = await fetch(apiURL);
     if (!res.ok) throw new Error('Bad response from: ' + apiURL);
     const items = await res.json();
-    return current_datetime.set(DateTime.fromISO(items.datetime));
+    const cdt = DateTime.fromISO(items.datetime);
+    finalTime.set(cdt);
+    return current_datetime.set(cdt);
 }
 
 // VWP graphic data for one observation
@@ -231,7 +233,7 @@ async function getDatetimeList(nframes) {
     // Request the list of datetimes 
     const apiURL = baseAPI + get(currentRadar).id + '/' +
         get(currentProduct).id + '/' +
-        get(current_datetime).setZone('UTC').toFormat("y-MM-dd'T'HH:mm:ss'Z'") +
+        get(finalTime).setZone('UTC').toFormat("y-MM-dd'T'HH:mm:ss'Z'") +
         '/' + nframes;
     const res = await fetch(apiURL);
     if (!res.ok) throw new Error('Bad response from: ' + apiURL);
